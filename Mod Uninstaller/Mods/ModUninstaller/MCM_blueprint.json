@@ -1,0 +1,77 @@
+{
+    "SchemaVersion": 1,
+    "Tabs": [
+        {
+            "TabName": "Features",
+            "TabId": "features",
+            "Sections": [
+                {
+                    "SectionId": "Features",
+                    "SectionName": "Features",
+                    "Settings": [
+                        {
+                            "Id": "delete_items",
+                            "Name": "Delete items",
+                            "Type": "checkbox",
+                            "Default": true,
+                            "Description": "Delete items from the mod when removing it.",
+                            "Handles": {
+                                "DescriptionHandle": "TBD",
+                                "NameHandle": "TBD"
+                            }
+                        },
+                        {
+                            "Id": "delete_spells",
+                            "Name": "(UNUSED) Delete spells",
+                            "Type": "checkbox",
+                            "Default": true,
+                            "Description": "(UNUSED) Delete spells from the mod when removing it.",
+                            "Handles": {
+                                "DescriptionHandle": "TBD",
+                                "NameHandle": "TBD"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "TabName": "Debug",
+            "TabId": "debug",
+            "Sections": [
+                {
+                    "SectionId": "debugging_settings",
+                    "SectionName": "Debugging",
+                    "Settings": [
+                        {
+                            "Id": "debug_level",
+                            "Name": "Debug level",
+                            "Type": "slider_int",
+                            "Default": 2,
+                            "Description": "0 = no debug, 1 = minimal, 2 = verbose debug logs.",
+                            "Options": {
+                                "Min": 0,
+                                "Max": 2
+                            },
+                            "Handles": {
+                                "DescriptionHandle": "TBD",
+                                "NameHandle": "TBD"
+                            }
+                        },
+                        {
+                            "Id": "debug_log",
+                            "Name": "Debug log",
+                            "Type": "checkbox",
+                            "Default": true,
+                            "Description": "Write debug logs to a file.\nLogs are saved in the 'logs' folder in the Mod Uninstaller SE directory.",
+                            "Handles": {
+                                "DescriptionHandle": "TBD",
+                                "NameHandle": "TBD"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
