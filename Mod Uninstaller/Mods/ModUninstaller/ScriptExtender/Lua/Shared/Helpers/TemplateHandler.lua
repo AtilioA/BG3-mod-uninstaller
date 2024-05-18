@@ -92,33 +92,33 @@ local function getAllModdedTemplates()
     return moddedTemplates
 end
 
-local function getModsTemplates()
-    local function getModDirectoriesTable()
+function GetModsTemplates()
+    local function getModIdsTable()
         local loadOrder = Ext.Mod.GetLoadOrder()
-        local modDirectories = {}
+        local modIds = {}
         for _, modId in pairs(loadOrder) do
             local mod = Ext.Mod.GetMod(modId)
             if mod then
-                modDirectories[mod.Info.Directory] = {}
+                modIds[modId] = {}
             end
         end
-        return modDirectories
+        return modIds
     end
 
     local function assignTemplatesToMods()
-        local modDirectories = getModDirectoriesTable()
+        local modIds = getModIdsTable()
         local moddedTemplates = getAllModdedTemplates()
         for _, templateData in pairs(moddedTemplates) do
-            for directory, _ in pairs(modDirectories) do
-                if string.find(templateData.FileName, directory) then
-                    table.insert(modDirectories[directory], templateData.Name)
+            for modId, _ in pairs(modIds) do
+                local mod = Ext.Mod.GetMod(modId)
+                if mod and string.find(templateData.FileName, mod.Info.Directory) then
+                    table.insert(modIds[modId], templateData.Name)
                 end
             end
         end
-        _D(modDirectories)
+
+        return modIds
     end
 
-    assignTemplatesToMods()
+    return assignTemplatesToMods()
 end
-
-getModsTemplates()
