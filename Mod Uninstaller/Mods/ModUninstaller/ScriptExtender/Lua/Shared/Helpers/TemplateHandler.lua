@@ -112,7 +112,14 @@ function GetModsTemplates()
             for modId, _ in pairs(modIds) do
                 local mod = Ext.Mod.GetMod(modId)
                 if mod and string.find(templateData.FileName, mod.Info.Directory) then
-                    table.insert(modIds[modId], templateData.Name)
+                    table.insert(modIds[modId], {
+                        Id = templateData.Id,
+                        Name = templateData.Name,
+                        DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
+                        Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
+                        Stats = templateData.Stats,
+                        Icon = templateData.Icon,
+                    })
                 end
             end
         end
