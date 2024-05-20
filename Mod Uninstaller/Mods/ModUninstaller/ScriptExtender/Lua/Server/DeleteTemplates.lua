@@ -26,12 +26,8 @@ end
 --- Delete a table of templates by ID
 ---@param modsTemplatesData table<number, table>
 function DeleteTemplatesForMod(modsTemplatesData)
-    -- Refactor: listen for saving event instead
-    Osi.AutoSave()
-    VCHelpers.Timer:OnTime(2000, function()
-        local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
-        for _, templateData in pairs(modsTemplatesData) do
-            DeleteAllMatchingTemplates(entities, templateData.Id)
-        end
-    end)
+    local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
+    for _, templateData in pairs(modsTemplatesData) do
+        DeleteAllMatchingTemplates(entities, templateData.Id)
+    end
 end

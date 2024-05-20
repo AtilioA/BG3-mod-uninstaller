@@ -1,22 +1,36 @@
 -- REFACTOR: modularize etc
 
--- Function to create an item info table
+-- Function to create a table with item info
 -- Courtesy of Aahz
 local function createItemInfoTable(tabHeader, icon, name, statName, description, descriptionWidth)
     local itemInfoTable = tabHeader:AddTable("ItemInfo", 2)
+
     itemInfoTable.Borders = true
     itemInfoTable.SizingStretchSame = true
-    local r1 = itemInfoTable:AddRow("IIr1")
-    local r2 = itemInfoTable:AddRow("IIr2")
-    local c1 = r1:AddCell("IIc1")
-    local c2 = r1:AddCell("IIc2")
-    local itemInfoIconCell = r2:AddCell("IIc3")
-    local c4 = r2:AddCell("IIc4")
-    local itemInfoNameText = c1:AddText(name or "<Name>")
-    local itemInfoStatNameText = c2:AddText(statName or "<StatName>")
-    local itemInfoIcon = itemInfoIconCell:AddIcon(icon or "Item_ARM_Padded_3")
-    local itemInfoDesc = c4:AddText(UIHelpers:Wrap(description or "No description provided.", descriptionWidth or 33))
-    itemInfoDesc.IDContext = "IIidesc"
+
+    local row1 = itemInfoTable:AddRow("Row1")
+    local row2 = itemInfoTable:AddRow("Row2")
+
+    local nameCell = row1:AddCell("NameCell")
+    local statNameCell = row1:AddCell("StatNameCell")
+    local iconCell = row2:AddCell("IconCell")
+    local descriptionCell = row2:AddCell("DescriptionCell")
+
+    local itemNameText = nameCell:AddText(name or "<Name>")
+    itemNameText.IDContext = statName .. "_NameText"
+
+    local itemStatNameText = statNameCell:AddText(statName or "<StatName>")
+    itemStatNameText.IDContext = statName .. "_StatNameText"
+
+    -- TODO: replace with some question mark icon if the game has one
+    local itemIcon = iconCell:AddIcon(icon or "")
+    if itemIcon then
+        itemIcon.IDContext = statName .. "_Icon"
+    end
+
+    local itemDescription = descriptionCell:AddText(UIHelpers:Wrap(description or "No description provided.",
+        descriptionWidth or 33))
+    itemDescription.IDContext = statName .. "_DescriptionText"
 
     return itemInfoTable
 end
@@ -35,25 +49,76 @@ local function createModsToUninstallLabel(tabHeader)
 end
 
 local function createModsComboBox(tabHeader, modsToUninstallOptions)
-    local initialValue = modsToUninstallOptions[1]
-    local comboBox = tabHeader:AddCombo("", "initialValue")
+    -- Insert placeholder at the beginning of the options
+    table.insert(modsToUninstallOptions, 1, "First, select the mod to uninstall")
+
+    local comboBox = tabHeader:AddCombo("")
     comboBox.IDContext = "ModsToUninstallComboBox"
     comboBox.Options = modsToUninstallOptions
     comboBox.SelectedIndex = 0
     return comboBox
 end
 
+---Update the progress label with the given message and color
+---@param progressLabel table|nil The progress label to update
+---@param message string The message to display
+---@param color string The color of the text in hex format
+local function updateProgressLabel(progressLabel, message, color)
+    if progressLabel then
+        progressLabel.Label = message
+        progressLabel:SetColor("Text", VCHelpers.Color:hex_to_rgba(color))
+    end
+end
+
+---Handle the response from the server after attempting to uninstall a mod
+---@param progressLabel table|nil The progress label to update
+---@param payload string The JSON-encoded payload from the server
+local function handleUninstallResponse(progressLabel, payload)
+    local data = Ext.Json.Parse(payload)
+    local mod = Ext.Mod.GetMod(data.modUUID)
+    if not mod then
+        return
+    end
+
+    local modName = mod.Info.Name
+    if data.error then
+        updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
+    else
+        updateProgressLabel(progressLabel, "Successfully uninstalled mod '" .. modName .. "'!", "#00FF00")
+    end
+end
+
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
     local button = tabHeader:AddButton("Uninstall", "Uninstall")
     button.IDContext = "UninstallButton"
+
+    local progressLabel = tabHeader:AddText("")
+    progressLabel.IDContext = "UninstallProgressLabel"
+    progressLabel.SameLine = true
+
     button.OnClick = function()
         local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
+        if selectedMod == "First, select the mod to uninstall" then
+            return -- Do nothing if the placeholder is selected
+        end
+
         local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
+        updateProgressLabel(progressLabel, "Uninstalling mod " .. selectedMod .. "...", "#FFA500") -- Orange color for in-progress
+
         -- Request the server to take actions to help uninstalling the mod
         Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
             modUUID = selectedModUUID
         }))
     end
+
+    Ext.RegisterNetListener("MU_Uninstalled_Mod", function(channel, payload)
+        handleUninstallResponse(progressLabel, payload)
+    end)
+
+    Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
+        handleUninstallResponse(progressLabel, payload)
+    end)
+
     return button
 end
 
@@ -93,7 +158,6 @@ local function renderStatuses(templatesGroup, selectedModUUID)
 
         for _, status in ipairs(statuses) do
             local statusStat = Ext.Stats.Get(status)
-            _P(statusStat.Name)
             createItemInfoTable(templatesGroup,
                 statusStat.Icon or "",
                 Ext.Loca.GetTranslatedString(statusStat.DisplayName) or statusStat.Name or "<Name>",
@@ -108,11 +172,13 @@ local function handleComboBoxChange(value, templatesGroup, modsToUninstallOption
     clearTemplatesGroup(templatesGroup)
     templatesGroup.IDContext = "TemplatesGroup"
 
+    -- Check if the selected option is the placeholder and do nothing if it is
+    if value.SelectedIndex == 0 then
+        return
+    end
+
     local selectedMod = modsToUninstallOptions[value.SelectedIndex + 1]
     local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
-    local selectedModStatuses = GetStatusesFromMod(selectedModUUID)
-    _D(selectedModStatuses)
-    MUDebug(1, "Selected mod to uninstall: " .. selectedMod)
 
     renderTemplates(templatesGroup, selectedModUUID)
     renderStatuses(templatesGroup, selectedModUUID)
@@ -131,10 +197,10 @@ end
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
     local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
 
-    createModsToUninstallSeparator(tabHeader)
-    createModsToUninstallLabel(tabHeader)
+    local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
+    local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
 
     local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
-    createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-    createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+    local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
+    local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
 end)
