@@ -27,3 +27,7 @@ function GetStatsLoadedByMod(modGuid, type)
 
     return modStats
 end
+
+function GetStatusesFromMod(modGuid)
+    return GetStatsLoadedByMod(modGuid, "StatusData")
+end

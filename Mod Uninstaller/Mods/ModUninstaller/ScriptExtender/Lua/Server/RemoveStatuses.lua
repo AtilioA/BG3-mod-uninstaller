@@ -1,6 +1,3 @@
-function GetStatusesFromMod(modGuid)
-    return GetStatsLoadedByMod(modGuid, "StatusData")
-end
 
 function RemoveStatusesFromEntities(statuses)
     local entities = Ext.Entity.GetAllEntitiesWithUuid()

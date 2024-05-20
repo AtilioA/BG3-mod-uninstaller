@@ -5,7 +5,7 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
     local modTemplates = ModsTemplates[uuid]
 
     local success, err = xpcall(function()
-        if MCMGet("remove_items") then
+        if MCMGet("delete_items") then
             MUWarn(0, "Deleting " .. #modTemplates .. " templates from mod " .. mod.Info.Name)
             MUWarn(0)
             DeleteTemplatesForMod(modTemplates)
