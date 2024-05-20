@@ -1,63 +1,3 @@
--- local function isVanilla(name)
---     local vanillaMods = {
---         "Gustav",
---         "GustavDev",
---         "Shared",
---         "SharedDev",
---         "Honour"
---     }
---     for _, mod in pairs(vanillaMods) do
---         if string.find(name, mod) then
---             return true
---         end
---     end
---     return false
--- end
-
--- function VCHelpers.Template:GetTemplatesByMod()
---     local templates = Ext.Template.GetAllRootTemplates()
-
---     local templatesByMod = {}
---     for templateId, templateData in pairs(templates) do
---         if templateData.TemplateType ~= 'item' then
---             goto continue
---         end
-
---         local templateStats = Ext.Stats.Get(templateData.Stats)
---         if isVanillaFilename(templateData.FileName) or not templateStats then
---             goto continue
---         end
-
---         local modId = templateStats.ModId
---         -- _D(templateData)
---         _P(templateData.Stats, modId)
---         if not modId or isVanilla(modId) then
---             goto continue
---         end
-
---         local mod = Ext.Mod.GetMod(modId)
---         -- if mod then
---         -- _P(templateData.Name, mod.Info.Name)
---         -- end
-
-
---         local modInfo = Ext.Mod.GetMod(modId)
---         if modInfo and modInfo.Info.Name then
---             if not templatesByMod[modInfo.Info.Name] then
---                 templatesByMod[modInfo.Info.Name] = {}
---             end
---             table.insert(templatesByMod[modInfo.Info.Name], {
---                 TemplateId = templateId,
---                 TemplateName = templateData.Name,
---                 DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateId)
---             })
---         end
-
---         ::continue::
---     end
---     return templatesByMod
--- end
-
 local function getAllModdedTemplates()
     local function isVanillaFilename(filename)
         local vanillaPaths = {
@@ -105,25 +45,28 @@ function GetModsTemplates()
         return modIds
     end
 
+    local function addTemplateToMod(modIds, templateData)
+        for modId, _ in pairs(modIds) do
+            local mod = Ext.Mod.GetMod(modId)
+            if mod and string.find(templateData.FileName, mod.Info.Directory) then
+                table.insert(modIds[modId], {
+                    Id = templateData.Id,
+                    Name = templateData.Name,
+                    DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
+                    Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
+                    Stats = templateData.Stats,
+                    Icon = templateData.Icon,
+                })
+            end
+        end
+    end
+
     local function assignTemplatesToMods()
         local modIds = getModIdsTable()
         local moddedTemplates = getAllModdedTemplates()
         for _, templateData in pairs(moddedTemplates) do
-            for modId, _ in pairs(modIds) do
-                local mod = Ext.Mod.GetMod(modId)
-                if mod and string.find(templateData.FileName, mod.Info.Directory) then
-                    table.insert(modIds[modId], {
-                        Id = templateData.Id,
-                        Name = templateData.Name,
-                        DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
-                        Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
-                        Stats = templateData.Stats,
-                        Icon = templateData.Icon,
-                    })
-                end
-            end
+            addTemplateToMod(modIds, templateData)
         end
-
         return modIds
     end
 
