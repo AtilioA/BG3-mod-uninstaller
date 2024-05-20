@@ -11046,5 +11046,5 @@ VanillaTemplatesIDs = {
 	["af1d1a17-209e-45b3-8de2-dd22c9b93478"] = true,
 	["239ca3f6-c668-43fe-8bf6-880d28ae0e3e"] = true,
 	["cac0bc53-ce64-4ddc-a341-8279ea1c4932"] = true,
-	"6f3036ab-842f-4a09-9d7e-954e108680bd"
+	["6f3036ab-842f-4a09-9d7e-954e108680bd"] = true,
 }
