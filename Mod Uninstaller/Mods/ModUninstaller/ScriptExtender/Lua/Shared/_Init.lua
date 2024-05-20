@@ -46,6 +46,6 @@ else
     MUPrint(0, "Mod Uninstaller version " .. versionNumber .. " loaded")
 end
 
-ModsTemplates = GetModsTemplates()
+VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
 
 SubscribedEvents.SubscribeToEvents()

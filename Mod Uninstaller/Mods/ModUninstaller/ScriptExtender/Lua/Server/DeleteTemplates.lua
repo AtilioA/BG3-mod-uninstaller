@@ -10,9 +10,9 @@ function MoveAllItemsFromContainer(containerUUID)
     end
 end
 
-function DeleteAllMatchingTemplates(entities, templateUUID)
+function DeleteAllMatchingTemplates(entities, templateID)
     for _, entity in pairs(entities) do
-        if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateUUID then
+        if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateID then
             if Osi.IsContainer(entity.Uuid.EntityUuid) == 1 then
                 MoveAllItemsFromContainer(entity.Uuid.EntityUuid)
             end

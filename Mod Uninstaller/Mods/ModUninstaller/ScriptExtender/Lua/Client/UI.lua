@@ -50,7 +50,7 @@ end
 
 local function createModsComboBox(tabHeader, modsToUninstallOptions)
     -- Insert placeholder at the beginning of the options
-    table.insert(modsToUninstallOptions, 1, "First, select the mod to uninstall")
+    table.insert(modsToUninstallOptions, 1, "Click to see the available mods")
 
     local comboBox = tabHeader:AddCombo("")
     comboBox.IDContext = "ModsToUninstallComboBox"

@@ -1,5 +1,6 @@
 RequireFiles("Shared/Helpers/", {
-  "Printer",
-  "TemplateHandler",
-  "StatsHandler",
+    "Printer",
+    "VanillaTemplatesIDs",
+    "TemplateHandler",
+    "StatsHandler",
 })
