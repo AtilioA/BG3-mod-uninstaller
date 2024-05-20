@@ -21,11 +21,11 @@
                             }
                         },
                         {
-                            "Id": "delete_spells",
-                            "Name": "(UNUSED) Delete spells",
+                            "Id": "remove_statuses",
+                            "Name": "Remove statuses",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "(UNUSED) Delete spells from the mod when removing it.",
+                            "Description": "Remove statuses related to the mod when removing it.",
                             "Handles": {
                                 "DescriptionHandle": "TBD",
                                 "NameHandle": "TBD"
