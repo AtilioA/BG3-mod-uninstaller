@@ -67,4 +67,12 @@ function UIHelpers:Wrap(text, width)
     return table.concat(lines, "\n")
 end
 
+function UIHelpers:SortModUUIDTableByModName(modUUIDTable)
+    table.sort(modUUIDTable, function(a, b)
+        local modA = Ext.Mod.GetMod(self:GetModToUninstallUUID(a))
+        local modB = Ext.Mod.GetMod(self:GetModToUninstallUUID(b))
+        return modA.Info.Name < modB.Info.Name
+    end)
+end
+
 return UIHelpers

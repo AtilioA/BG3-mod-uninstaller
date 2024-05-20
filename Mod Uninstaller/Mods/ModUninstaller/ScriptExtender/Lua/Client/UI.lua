@@ -196,6 +196,7 @@ end
 
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
     local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
+    UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
 
     local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
     local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
