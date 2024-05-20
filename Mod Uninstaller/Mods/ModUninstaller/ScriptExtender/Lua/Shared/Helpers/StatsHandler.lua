@@ -19,9 +19,16 @@ function GetStatsLoadedByMod(modGuid, type)
         return {}
     end
 
-    local modAfterGuid = loadOrder[modIndex + 1]
     local allStatsBeforeCurrentMod = Ext.Stats.GetStatsLoadedBefore(modGuid, type)
-    local allStatsBeforeNextMod = Ext.Stats.GetStatsLoadedBefore(modAfterGuid, type)
+    local allStatsBeforeNextMod
+
+    if modIndex == #loadOrder then
+        -- If the mod is the last in the load order, there is no mod after it, so we get all stats
+        allStatsBeforeNextMod = Ext.Stats.GetStats(type)
+    else
+        local modAfterGuid = loadOrder[modIndex + 1]
+        allStatsBeforeNextMod = Ext.Stats.GetStatsLoadedBefore(modAfterGuid, type)
+    end
 
     local modStats = table.getDifference(allStatsBeforeNextMod, allStatsBeforeCurrentMod)
 
