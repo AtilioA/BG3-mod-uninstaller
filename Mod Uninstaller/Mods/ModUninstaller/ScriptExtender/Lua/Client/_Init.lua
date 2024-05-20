@@ -1,9 +1,9 @@
-local modTemplates = GetModsTemplates()
+-- REFACTOR: modularize etc
 
 local function populateModsToUninstallOptions()
     local modsToUninstallOptions = {}
 
-    for modId, templates in pairs(modTemplates) do
+    for modId, templates in pairs(ModsTemplates) do
         -- Check if the table is not empty
         if next(templates) ~= nil then
             local modName = Ext.Mod.GetMod(modId).Info.Name
@@ -91,22 +91,39 @@ end
 
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
     local modsToUninstallOptions = populateModsToUninstallOptions()
-    local modsToUninstall = tabHeader:AddText("Mods to uninstall")
-    modsToUninstall.IDContext = "ModsToUninstall"
+    local modsToUninstallSeparator = tabHeader:AddSeparatorText("Mods to uninstall")
+    modsToUninstallSeparator.IDContext = "ModsToUninstall"
+
+    local modsToUninstallLabel = tabHeader:AddText("Select the mod to uninstall:")
+    modsToUninstallLabel.IDContext = "ModsToUninstallLabel"
+    modsToUninstallLabel.SameLine = false
 
     local initialValue = modsToUninstallOptions[1]
-    local comboBox = tabHeader:AddCombo("", initialValue)
-    comboBox.IDContext = "ModsToUninstallComboBox"
-    comboBox.Options = modsToUninstallOptions
+    local modsComboBox = tabHeader:AddCombo("", "initialValue")
+    modsComboBox.IDContext = "ModsToUninstallComboBox"
+    modsComboBox.Options = modsToUninstallOptions
 
     -- Set initial selection
-    comboBox.SelectedIndex = 0
+    modsComboBox.SelectedIndex = 0
+
+    local uninstallButton = tabHeader:AddButton("Uninstall", "Uninstall")
+    uninstallButton.IDContext = "UninstallButton"
+
+    uninstallButton.OnClick = function()
+        local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
+        local selectedModUUID = getModToUninstallUUID(selectedMod)
+
+        -- Uninstall the mod
+        Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
+            modUUID = selectedModUUID
+        }))
+    end
 
     -- Group that will contain the templates elements for the selected mod; useful for destroying the elements when changing the selected mod
     local templatesGroup = tabHeader:AddGroup("Templates")
 
     -- Handle the change event for the combo box, which will display the templates for the selected mod
-    comboBox.OnChange = function(value)
+    modsComboBox.OnChange = function(value)
         -- First, destroy all the children of the templatesGroup before rendering new ones
         if templatesGroup.Children ~= nil then
             for _, child in ipairs(templatesGroup.Children) do
@@ -121,8 +138,13 @@ Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader
 
         MUDebug(1, "Selected mod to uninstall: " .. selectedMod)
 
+        local templateText = templatesGroup:AddText(
+            "These items will be deleted from your savegame if you click the 'Uninstall' button:")
+        templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
+        templateText.IDContext = "TemplateText"
+
         -- Iterate the table associated with the selectedMod UUID and call createItemInfoTable for each template there
-        for _, template in ipairs(modTemplates[selectedModUUID]) do
+        for _, template in ipairs(ModsTemplates[selectedModUUID]) do
             createItemInfoTable(templatesGroup,
                 template.Icon or "",
                 template.DisplayName or template.Name or "<Name>",
