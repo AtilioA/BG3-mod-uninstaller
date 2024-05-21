@@ -10,14 +10,29 @@
                     "SectionName": "Features",
                     "Settings": [
                         {
+                            "Id": "debug_level",
+                            "Name": "Debug level",
+                            "Type": "slider_int",
+                            "Default": 1,
+                            "Description": "0 = no debug, 1 = minimal, 2 = verbose debug logs.\nFor this mod, 1 or 2 is recommended.",
+                            "Options": {
+                                "Min": 0,
+                                "Max": 2
+                            },
+                            "Handles": {
+                                "DescriptionHandle": "h41207aa60b2141b0a17e70393fffb4a7d889",
+                                "NameHandle": "h1097dfc154a744988edb67de00c1aa2f9df8"
+                            }
+                        },
+                        {
                             "Id": "delete_items",
                             "Name": "Delete items",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "Delete items from the mod when removing it.",
+                            "Description": "Delete items from the mod when removing it.\nDon't disable this unless you know what you're doing.",
                             "Handles": {
-                                "DescriptionHandle": "TBD",
-                                "NameHandle": "TBD"
+                                "DescriptionHandle": "h67d4b5dd071e4b429e1c7b324a69be88a9gc",
+                                "NameHandle": "hb5d55e252c9745afabccac4a9d429c70de55"
                             }
                         },
                         {
@@ -25,48 +40,10 @@
                             "Name": "Remove statuses",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "Remove statuses related to the mod when removing it.",
+                            "Description": "Remove statuses added by the mod when removing it.\nDon't disable this unless you know what you're doing.",
                             "Handles": {
-                                "DescriptionHandle": "TBD",
-                                "NameHandle": "TBD"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "TabName": "Debug",
-            "TabId": "debug",
-            "Sections": [
-                {
-                    "SectionId": "debugging_settings",
-                    "SectionName": "Debugging",
-                    "Settings": [
-                        {
-                            "Id": "debug_level",
-                            "Name": "Debug level",
-                            "Type": "slider_int",
-                            "Default": 2,
-                            "Description": "0 = no debug, 1 = minimal, 2 = verbose debug logs.",
-                            "Options": {
-                                "Min": 0,
-                                "Max": 2
-                            },
-                            "Handles": {
-                                "DescriptionHandle": "TBD",
-                                "NameHandle": "TBD"
-                            }
-                        },
-                        {
-                            "Id": "debug_log",
-                            "Name": "Debug log",
-                            "Type": "checkbox",
-                            "Default": true,
-                            "Description": "Write debug logs to a file.\nLogs are saved in the 'logs' folder in the Mod Uninstaller SE directory.",
-                            "Handles": {
-                                "DescriptionHandle": "TBD",
-                                "NameHandle": "TBD"
+                                "DescriptionHandle": "h0700eec13ba440c3b8f35b3739fca0b08253",
+                                "NameHandle": "h25aff7b603e348ba8c9fdb967f1aa8f4gg25"
                             }
                         }
                     ]
