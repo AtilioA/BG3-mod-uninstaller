@@ -94,6 +94,7 @@ local function handleUninstallResponse(progressLabel, payload)
     end
 
     local modName = mod.Info.Name
+
     if data.error then
         updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
     else
@@ -107,7 +108,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
 
     local progressLabel = tabHeader:AddText("")
     progressLabel.IDContext = "UninstallProgressLabel"
-    progressLabel.SameLine = true
+    progressLabel.SameLine = false
 
     button.OnClick = function()
         local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
@@ -116,7 +117,9 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         end
 
         local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
-        updateProgressLabel(progressLabel, "Uninstalling mod " .. selectedMod .. "...", "#FFA500") -- Orange color for in-progress
+        button.Visible = false
+        progressLabel.SameLine = false
+        updateProgressLabel(progressLabel, "Uninstalling mod " .. selectedMod .. "...", "#FFA500")
 
         -- Request the server to take actions to help uninstalling the mod
         Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
@@ -126,10 +129,14 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     end
 
     Ext.RegisterNetListener("MU_Uninstalled_Mod", function(channel, payload)
+        button.Visible = true
+        progressLabel.SameLine = true
         handleUninstallResponse(progressLabel, payload)
     end)
 
     Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
+        button.Visible = true
+        progressLabel.SameLine = true
         handleUninstallResponse(progressLabel, payload)
     end)
 
