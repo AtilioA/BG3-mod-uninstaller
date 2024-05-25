@@ -13,7 +13,7 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
         if MCMGet("delete_items") then
             MUWarn(0, "Deleting " .. #modTemplates .. " item templates from mod " .. mod.Info.Name)
             DeleteTemplatesForMod(modTemplates)
-            MUTest(0, "Deleted all item templates from mod " .. mod.Info.Name)
+            MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
         end
         if MCMGet("remove_statuses") then
             MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)

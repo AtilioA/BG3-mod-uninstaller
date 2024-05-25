@@ -23,6 +23,11 @@ function MUTest(debugLevel, ...)
     MUPrinter:PrintTest(debugLevel, ...)
 end
 
+function MUSuccess(debugLevel, ...)
+    MUPrinter:SetFontColor(50, 255, 100)
+    MUPrinter:Print(debugLevel, ...)
+end
+
 function MUDebug(debugLevel, ...)
     MUPrinter:SetFontColor(200, 200, 0)
     MUPrinter:PrintDebug(debugLevel, ...)
