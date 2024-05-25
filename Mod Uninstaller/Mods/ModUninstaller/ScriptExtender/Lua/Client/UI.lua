@@ -23,9 +23,21 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
     itemStatNameText.IDContext = statName .. "_StatNameText"
 
     -- TODO: replace with some question mark icon if the game has one
-    local itemIcon = iconCell:AddIcon(icon or "")
-    if itemIcon then
-        itemIcon.IDContext = statName .. "_Icon"
+    if DevelReady then
+        local itemIcon = iconCell:AddIcon(icon or "")
+        if itemIcon then
+            itemIcon.IDContext = statName .. "_Icon"
+        end
+    else
+        local itemIcon = iconCell:AddText(UIHelpers:Wrap(icon or "", descriptionWidth or 30))
+        local itemIconPlaceholder = iconCell:AddText(UIHelpers:Wrap(
+            "*This will have an icon when SE v17 is released*", descriptionWidth or 30))
+        if itemIcon then
+            itemIcon.IDContext = statName .. "_Icon"
+        end
+        if itemIconPlaceholder then
+            itemIconPlaceholder.IDContext = statName .. "_IconPlaceholder"
+        end
     end
 
     local itemDescription = descriptionCell:AddText(UIHelpers:Wrap(description or "No description provided.",
@@ -123,11 +135,17 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     return button
 end
 
-local function clearTemplatesGroup(templatesGroup)
-    if templatesGroup.Children ~= nil then
-        for _, child in ipairs(templatesGroup.Children) do
-            child:Destroy()
+local function clearTemplatesGroup(tabHeader, templatesGroup)
+    if DevelReady then
+        if templatesGroup.Children ~= nil then
+            for _, child in ipairs(templatesGroup.Children) do
+                child:Destroy()
+            end
         end
+    elseif templatesGroup ~= nil and templatesGroup.Destroy ~= nil then
+        templatesGroup:Destroy()
+        templatesGroup = tabHeader:AddGroup("Templates")
+        return templatesGroup
     end
 end
 
@@ -169,8 +187,6 @@ local function renderStatuses(templatesGroup, selectedModUUID)
 end
 
 local function handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
-    -- First, destroy all the children of the templatesGroup before rendering new ones
-    clearTemplatesGroup(templatesGroup)
     templatesGroup.IDContext = "TemplatesGroup"
 
     -- Check if the selected option is the placeholder and do nothing if it is
@@ -190,6 +206,8 @@ local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOpti
     local templatesGroup = tabHeader:AddGroup("Templates")
     -- Handle the change event for the combo box, which will display the templates for the selected mod
     modsComboBox.OnChange = function(value)
+        -- First, destroy all the children of the templatesGroup before rendering new ones
+        templatesGroup = clearTemplatesGroup(tabHeader, templatesGroup)
         handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
     end
     return templatesGroup
