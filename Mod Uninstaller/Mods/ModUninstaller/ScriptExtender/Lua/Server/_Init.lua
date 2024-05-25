@@ -3,3 +3,6 @@ RequireFiles("Server/", {
     "DeleteTemplates",
     "RemoveStatuses"
 })
+
+VanillaTemplates = {}
+ModsTemplates = {}
