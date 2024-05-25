@@ -1,5 +1,5 @@
 setmetatable(Mods.ModUninstaller, { __index = Mods.VolitionCabinet })
-DevelReady = Ext.Utils:Version() >= 17
+DevelReady = Ext.Utils:Version() >= 17 or Ext.Debug.IsDeveloperMode()
 
 local deps = {
     VCModuleUUID = "f97b43be-7398-4ea5-8fe2-be7eb3d4b5ca",
