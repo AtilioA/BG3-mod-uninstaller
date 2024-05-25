@@ -2,8 +2,8 @@
 <contentList>
     <content contentuid="h1097dfc154a744988edb67de00c1aa2f9df8" version="1">Nível de depuração</content>
     <content contentuid="h41207aa60b2141b0a17e70393fffb4a7d889" version="1">0 = sem depuração, 1 = mínima, 2 = logs de depuração detalhados.&lt;br&gt;Para este mod, 1 ou 2 é recomendado.</content>
-    <content contentuid="h67d4b5dd071e4b429e1c7b324a69be88a9gc" version="1">Excluir itens do mod ao removê-lo.&lt;br&gt;Não desative a menos que você saiba o que está fazendo.</content>
-    <content contentuid="h0700eec13ba440c3b8f35b3739fca0b08253" version="1">Remover status adicionados pelo mod ao removê-lo.&lt;br&gt;Não desative a menos que você saiba o que está fazendo.</content>
+    <content contentuid="h67d4b5dd071e4b429e1c7b324a69be88a9gc" version="1">Excluir itens do mod ao desinstalá-lo.&lt;br&gt;Não desative a menos que você saiba o que está fazendo.</content>
+    <content contentuid="h0700eec13ba440c3b8f35b3739fca0b08253" version="1">Remover status adicionados pelo mod ao desinstalá-lo.&lt;br&gt;Não desative a menos que você saiba o que está fazendo.</content>
     <content contentuid="hb5d55e252c9745afabccac4a9d429c70de55" version="1">Excluir itens</content>
-    <content contentuid="h25aff7b603e348ba8c9fdb967f1aa8f4gg25" version="1">Remover status</content>
+    <content contentuid="h25aff7b603e348ba8c9fdb967f1aa8f4gg25" version="1">Remover statuses</content>
 </contentList>
