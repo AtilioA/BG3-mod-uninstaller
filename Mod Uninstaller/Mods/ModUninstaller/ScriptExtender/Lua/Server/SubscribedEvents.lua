@@ -29,3 +29,7 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
         Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = data.modUUID, error = err }))
     end
 end)
+
+Ext.RegisterNetListener("MU_Server_Should_Load_Templates", function(channel, payload)
+    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+end)

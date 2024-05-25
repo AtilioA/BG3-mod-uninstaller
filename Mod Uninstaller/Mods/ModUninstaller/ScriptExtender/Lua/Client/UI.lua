@@ -1,4 +1,5 @@
--- REFACTOR: modularize etc
+UI = {}
+UI.HasLoadedTemplates = false
 
 -- Function to create a table with item info
 -- Courtesy of Aahz
@@ -22,8 +23,8 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
     local itemStatNameText = statNameCell:AddText(statName or "<StatName>")
     itemStatNameText.IDContext = statName .. "_StatNameText"
 
-    -- TODO: replace with some question mark icon if the game has one
     if DevelReady then
+        -- TODO: replace with some question mark icon if the game has one
         local itemIcon = iconCell:AddIcon(icon or "")
         if itemIcon then
             itemIcon.IDContext = statName .. "_Icon"
@@ -218,17 +219,41 @@ local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOpti
     return templatesGroup
 end
 
+local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
+    local buttonGroup = tabHeader:AddGroup("Load templates")
+    buttonGroup.IDContext = "LoadTemplatesGroup"
+    local buttonLabel = buttonGroup:AddSeparatorText("REQUIRED: Load data from mods")
+    buttonLabel.IDContext = "LoadTemplatesLabel"
+    local button = buttonGroup:AddButton("Load templates", "Load templates")
+    button.IDContext = "LoadTemplatesButton"
+
+    button.OnClick = function()
+        if not UI.HasLoadedTemplates then
+            VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+            -- Needed cause some load orders might be too big to send via net messages
+            Ext.Net.PostMessageToServer("MU_Server_Should_Load_Templates", "")
+
+            UI.HasLoadedTemplates = true
+
+            local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
+            UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
+
+            local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
+            local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
+
+            local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
+            local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
+            local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+            buttonGroup:Destroy()
+        else
+            button.Label = "Templates have already been loaded. You may select a mod to uninstall."
+            MUSuccess(0, "Templates have already been loaded. You may select a mod to uninstall.")
+        end
+    end
+end
+
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
-    -- REFACTOR: only load on `reset` or button press
-    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
-
-    local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
-    UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
-
-    local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
-    local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
-
-    local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
-    local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-    local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+    createLoadTemplatesButton(tabHeader)
 end)
+
+return UI
