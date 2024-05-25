@@ -136,53 +136,58 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
 end
 
 local function clearTemplatesGroup(tabHeader, templatesGroup)
+    if not templatesGroup then
+        return
+    end
+
     if DevelReady then
-        if templatesGroup.Children ~= nil then
-            for _, child in ipairs(templatesGroup.Children) do
-                child:Destroy()
-            end
+        for _, child in ipairs(templatesGroup.Children or {}) do
+            child:Destroy()
         end
-    elseif templatesGroup ~= nil and templatesGroup.Destroy ~= nil then
+    else
         templatesGroup:Destroy()
-        templatesGroup = tabHeader:AddGroup("Templates")
-        return templatesGroup
+        return tabHeader:AddGroup("Templates")
     end
 end
 
 local function renderTemplates(templatesGroup, selectedModUUID)
     local templates = ModsTemplates[selectedModUUID]
-    if #templates > 0 then
-        local templateText = templatesGroup:AddText(
-            "These items will be deleted from your save if you click the 'Uninstall' button:")
-        templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
-        templateText.IDContext = "TemplateText"
+    if #templates == 0 then
+        return
+    end
 
-        for _, template in ipairs(templates) do
-            createItemInfoTable(templatesGroup,
-                template.Icon or "",
-                template.DisplayName or template.Name or "<Name>",
-                template.Stats or "<StatName>",
-                template.Description or "No description provided.")
-        end
+    local templateText = templatesGroup:AddText(
+        "These items will be deleted from your save if you click the 'Uninstall' button:")
+    templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
+    templateText.IDContext = "TemplateText"
+
+    for _, template in ipairs(templates) do
+        createItemInfoTable(templatesGroup,
+            template.Icon or "",
+            template.DisplayName or template.Name or "<Name>",
+            template.Stats or "<StatName>",
+            template.Description or "No description provided.")
     end
 end
 
 local function renderStatuses(templatesGroup, selectedModUUID)
     local statuses = GetStatusesFromMod(selectedModUUID)
-    if #statuses > 0 then
-        local statusText = templatesGroup:AddText(
-            "These statuses will be removed from all entities in your save if you click the 'Uninstall' button:")
-        statusText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
-        statusText.IDContext = "StatusText"
+    if #statuses == 0 then
+        return
+    end
 
-        for _, status in ipairs(statuses) do
-            local statusStat = Ext.Stats.Get(status)
-            createItemInfoTable(templatesGroup,
-                statusStat.Icon or "",
-                Ext.Loca.GetTranslatedString(statusStat.DisplayName) or statusStat.Name or "<Name>",
-                statusStat.Name or "<StatusName>",
-                Ext.Loca.GetTranslatedString(statusStat.Description) or "No description provided.")
-        end
+    local statusText = templatesGroup:AddText(
+        "These statuses will be removed from all entities in your save if you click the 'Uninstall' button:")
+    statusText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
+    statusText.IDContext = "StatusText"
+
+    for _, status in ipairs(statuses) do
+        local statusStat = Ext.Stats.Get(status)
+        createItemInfoTable(templatesGroup,
+            statusStat.Icon or "",
+            Ext.Loca.GetTranslatedString(statusStat.DisplayName) or statusStat.Name or "<Name>",
+            statusStat.Name or "<StatusName>",
+            Ext.Loca.GetTranslatedString(statusStat.Description) or "No description provided.")
     end
 end
 
