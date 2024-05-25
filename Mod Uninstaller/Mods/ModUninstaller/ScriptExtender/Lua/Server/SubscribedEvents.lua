@@ -7,7 +7,7 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
             Ext.Json.Stringify({ modUUID = data.modUUID, error = "Mod is not loaded" }))
         return
     end
-    local modTemplates = ModsTemplates[uuid]
+    local modTemplates = data.modTemplates
 
     local success, err = xpcall(function()
         if MCMGet("delete_items") then

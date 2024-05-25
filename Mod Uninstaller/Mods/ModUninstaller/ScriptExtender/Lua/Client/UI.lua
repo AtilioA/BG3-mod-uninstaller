@@ -98,8 +98,8 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
 
     button.OnClick = function()
         local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
-        if selectedMod == "First, select the mod to uninstall" then
-            return -- Do nothing if the placeholder is selected
+        if selectedMod == "Click to see the available mods" then
+            return
         end
 
         local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
@@ -107,7 +107,8 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
 
         -- Request the server to take actions to help uninstalling the mod
         Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
-            modUUID = selectedModUUID
+            modUUID = selectedModUUID,
+            modsTemplates = ModsTemplates[selectedModUUID]
         }))
     end
 
@@ -195,6 +196,9 @@ local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOpti
 end
 
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
+    -- REFACTOR: only load on `reset` or button press
+    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+
     local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
     UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
 
