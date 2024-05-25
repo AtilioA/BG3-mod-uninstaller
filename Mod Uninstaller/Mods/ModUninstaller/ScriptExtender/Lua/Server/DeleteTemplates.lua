@@ -11,7 +11,8 @@ function MoveAllItemsFromContainer(containerUUID)
     end
 
     --- Delete the container after 1 second, just to be safe (in case the items are not moved in time)
-    VCHelpers.Timer:OnTime(1000, function()
+    VCHelpers.Timer:OnTime(1500, function()
+        MUWarn(0, "Deleting container: " .. containerUUID)
         Osi.RequestDelete(containerUUID)
     end)
 end
@@ -20,7 +21,10 @@ function DeleteAllMatchingTemplates(entities, templateID)
     for _, entity in pairs(entities) do
         if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateID then
             if Osi.IsContainer(entity.Uuid.EntityUuid) == 1 then
-                MUWarn(0, "Container found with UUID: " .. entity.Uuid.EntityUuid .. ". Moving its items to camp chest.")
+                MUWarn(0,
+                    "Container " ..
+                    entity.ServerItem.Template.Name ..
+                    " found with UUID: " .. entity.Uuid.EntityUuid .. ". Moving its items to camp chest.")
                 MoveAllItemsFromContainer(entity.Uuid.EntityUuid)
                 return
             end
