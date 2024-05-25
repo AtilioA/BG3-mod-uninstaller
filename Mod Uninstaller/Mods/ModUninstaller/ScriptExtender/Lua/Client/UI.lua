@@ -30,9 +30,9 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
             itemIcon.IDContext = statName .. "_Icon"
         end
     else
-        local itemIcon = iconCell:AddText(UIHelpers:Wrap(icon or "", descriptionWidth or 30))
+        local itemIcon = iconCell:AddText(icon or "")
         local itemIconPlaceholder = iconCell:AddText(UIHelpers:Wrap(
-            "*This will have an icon when SE v17 is released*", descriptionWidth or 30))
+            "*This icon will be displayed when SE v17 is released*", descriptionWidth or 30))
         if itemIcon then
             itemIcon.IDContext = statName .. "_Icon"
         end
@@ -104,6 +104,8 @@ end
 
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
     local button = tabHeader:AddButton("Uninstall", "Uninstall")
+    button:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FFFFFF"))
+    button:SetColor("Button", VCHelpers.Color:hex_to_rgba("#FF2525"))
     button.IDContext = "UninstallButton"
 
     local progressLabel = tabHeader:AddText("")
@@ -227,11 +229,14 @@ local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOpti
 end
 
 local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
-    local buttonGroup = tabHeader:AddGroup("Load templates")
+    local buttonGroup = tabHeader:AddGroup("Parse mod data")
     buttonGroup.IDContext = "LoadTemplatesGroup"
-    local buttonLabel = buttonGroup:AddSeparatorText("REQUIRED: Load data from mods")
+    local buttonSeparator = buttonGroup:AddSeparatorText("REQUIRED: Load data from mods")
+    buttonSeparator.IDContext = "LoadTemplatesSeparator"
+    local buttonLabel = buttonGroup:AddText(
+        "For performance reasons, mod data is only parsed after clicking this button:")
     buttonLabel.IDContext = "LoadTemplatesLabel"
-    local button = buttonGroup:AddButton("Load templates", "Load templates")
+    local button = buttonGroup:AddButton("Parse mod data")
     button.IDContext = "LoadTemplatesButton"
 
     button.OnClick = function()
