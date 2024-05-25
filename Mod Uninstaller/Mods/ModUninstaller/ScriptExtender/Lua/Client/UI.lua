@@ -145,18 +145,12 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     return button
 end
 
-local function clearTemplatesGroup(tabHeader, templatesGroup)
+local function clearTemplatesGroup(templatesGroup)
     if not templatesGroup then
         return
     end
-
-    if DevelReady then
-        for _, child in ipairs(templatesGroup.Children or {}) do
-            child:Destroy()
-        end
-    else
-        templatesGroup:Destroy()
-        return tabHeader:AddGroup("Templates")
+    for _, child in ipairs(templatesGroup.Children or {}) do
+        child:Destroy()
     end
 end
 
@@ -202,8 +196,6 @@ local function renderStatuses(templatesGroup, selectedModUUID)
 end
 
 local function handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
-    templatesGroup.IDContext = "TemplatesGroup"
-
     -- Check if the selected option is the placeholder and do nothing if it is
     if value.SelectedIndex == 0 then
         return
@@ -222,7 +214,14 @@ local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOpti
     -- Handle the change event for the combo box, which will display the templates for the selected mod
     modsComboBox.OnChange = function(value)
         -- First, destroy all the children of the templatesGroup before rendering new ones
-        templatesGroup = clearTemplatesGroup(tabHeader, templatesGroup)
+        -- TODO: refactor this mess after v17 is released smh
+        if DevelReady then
+            clearTemplatesGroup(templatesGroup)
+        elseif templatesGroup then
+            templatesGroup:Destroy()
+        end
+        templatesGroup = tabHeader:AddGroup("Templates")
+        templatesGroup.IDContext = "TemplatesGroup"
         handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
     end
     return templatesGroup
