@@ -26,6 +26,7 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
     if DevelReady then
         -- TODO: replace with some question mark icon if the game has one
         local itemIcon = iconCell:AddImage(icon or "")
+        -- TODO: set size?
         if itemIcon then
             itemIcon.IDContext = statName .. "_Icon"
         end
@@ -247,17 +248,32 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
             UI.HasLoadedTemplates = true
 
             local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
-            UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
+            if #modsToUninstallOptions == 0 then
+                local noModsToUninstallMsg =
+                    "No mods available to uninstall.\nIf you believe this is an error, please provide your SE console log to " ..
+                    Ext.Mod.GetMod(ModuleUUID).Info.Author .. "."
+                local noModsLabel = buttonGroup:AddText(
+                    noModsToUninstallMsg)
+                noModsLabel.IDContext = "NoModsLabel"
+                MUWarn(0,
+                    noModsToUninstallMsg)
+                UI.HasTemplates = false
+            else
+                UI.HasTemplates = true
+                UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
 
-            local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
-            local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
+                local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
+                local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
 
-            local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
-            local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-            local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
-            buttonGroup:Destroy()
-        else
-            button.Label = "Templates have already been loaded. You may select a mod to uninstall."
+                local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
+                local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
+                local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+                buttonGroup:Destroy()
+            end
+        elseif UI.HasTemplates then
+            local alreadyLoadedLabel = buttonGroup:AddText(
+                "Templates have already been loaded. You may select a mod to uninstall.")
+            alreadyLoadedLabel.IDContext = "AlreadyLoadedLabel"
             MUSuccess(0, "Templates have already been loaded. You may select a mod to uninstall.")
         end
     end
