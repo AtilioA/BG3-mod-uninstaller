@@ -25,7 +25,7 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
 
     if DevelReady then
         -- TODO: replace with some question mark icon if the game has one
-        local itemIcon = iconCell:AddIcon(icon or "")
+        local itemIcon = iconCell:AddImage(icon or "")
         if itemIcon then
             itemIcon.IDContext = statName .. "_Icon"
         end
