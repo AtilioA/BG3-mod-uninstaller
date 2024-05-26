@@ -15,10 +15,12 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
             DeleteTemplatesForMod(modTemplates)
             MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
         end
-        if MCMGet("remove_statuses") then
-            MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
-            RemoveStatusesFromMod(uuid)
-        end
+        -- if MCMGet("remove_statuses") then
+        --     MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
+        --     RemoveStatusesFromMod(uuid)
+        -- end
+        MUWarn(0,
+            "Due to SE limitations, removing statuses has been temporarily disabled.\nTrack Mod Uninstaller on the Nexus to see when it will be re-enabled.")
     end, debug.traceback)
 
     if success then
@@ -48,7 +50,7 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
     end
 
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
-    
+
     local modTemplates = ModsTemplates[modId]
     if not modTemplates then
         MUWarn(0, "No templates found for mod ID: " .. modId)
@@ -60,10 +62,10 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
         DeleteTemplatesForMod(modTemplates)
         MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
     end
-    if MCMGet("remove_statuses") then
-        MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
-        RemoveStatusesFromMod(modId)
-    end
+    -- if MCMGet("remove_statuses") then
+    --     MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
+    --     RemoveStatusesFromMod(modId)
+    -- end
 
     Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
         mod.Info.Name .. "' was uninstalled successfully!\nYou may now safely disable it in your mod manager.")
