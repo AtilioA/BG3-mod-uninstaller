@@ -10,13 +10,25 @@ end
 
 function RemoveStatusesFromMod(modGuid)
     local statuses = GetStatusesFromMod(modGuid)
-    if #statuses == 0 then
+
+    -- Filter out vanilla statuses
+    local modStatuses = {}
+    for _, status in ipairs(statuses) do
+        if VanillaStatuses[status] ~= true then
+            MUWarn(1, "Queuing status " .. status .. " for removal from mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
+            table.insert(modStatuses, status)
+        else
+            MUWarn(1, "Skipping vanilla status " .. status .. " from mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
+        end
+    end
+
+    if #modStatuses == 0 then
         MUSuccess(0, "Mod " .. Ext.Mod.GetMod(modGuid).Info.Name .. " has no statuses")
         return
     end
 
-    MUWarn(0, "Removing " .. #statuses .. " statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
-    RemoveStatusesFromEntities(statuses)
+    MUWarn(0, "Removing " .. #modStatuses .. " statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
+    RemoveStatusesFromEntities(modStatuses)
     MUSuccess(0, "Removed all statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
 end
 
