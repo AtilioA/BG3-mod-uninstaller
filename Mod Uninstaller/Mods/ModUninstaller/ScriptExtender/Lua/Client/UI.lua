@@ -208,7 +208,7 @@ local function handleComboBoxChange(value, templatesGroup, modsToUninstallOption
     local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
 
     renderTemplates(templatesGroup, selectedModUUID)
-    renderStatuses(templatesGroup, selectedModUUID)
+    -- renderStatuses(templatesGroup, selectedModUUID)
 end
 
 local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
@@ -262,6 +262,8 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
                 UI.HasTemplates = false
             else
                 UI.HasTemplates = true
+                local modsToUninstallOptionsDump = Ext.DumpExport(modsToUninstallOptions)
+                MUDebug(1, modsToUninstallOptionsDump)
                 UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
 
                 local uninstallSeparator = createModsToUninstallSeparator(tabHeader)

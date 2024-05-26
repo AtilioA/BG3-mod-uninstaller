@@ -25,7 +25,8 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
 
     if success then
         Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
-            mod.Info.Name .. "' was uninstalled successfully!\nYou may now safely disable it in your mod manager.")
+            mod.Info.Name ..
+            "' was uninstalled successfully!\nYou may now disable it in your mod manager if it doesn't add statuses.")
         Ext.Net.BroadcastMessage("MU_Uninstalled_Mod", Ext.Json.Stringify({ modUUID = data.modUUID }))
     else
         Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = data.modUUID, error = err }))
@@ -68,5 +69,6 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
     -- end
 
     Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
-        mod.Info.Name .. "' was uninstalled successfully!\nYou may now safely disable it in your mod manager.")
+        mod.Info.Name ..
+        "' was uninstalled successfully!\nYou may now disable it in your mod manager if it doesn't add statuses.")
 end)
