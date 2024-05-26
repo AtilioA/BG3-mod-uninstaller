@@ -81,8 +81,28 @@ function UIHelpers:SortModUUIDTableByModName(modUUIDTable)
     end
 
     table.sort(modUUIDTable, function(a, b)
-        local modA = Ext.Mod.GetMod(self:GetModToUninstallUUID(a))
-        local modB = Ext.Mod.GetMod(self:GetModToUninstallUUID(b))
+        -- Something is still wrong with the sorting, but it won't throw an error anymore
+        local modAUUID = self:GetModToUninstallUUID(a)
+        local modBUUID = self:GetModToUninstallUUID(b)
+
+        if not modAUUID or not modBUUID then
+            MUWarn(0, "Could not extract mod UUID from mod option: " .. (a or "nil") .. " or " .. (b or "nil"))
+            return false
+        end
+
+        local modA = Ext.Mod.GetMod(modAUUID)
+        local modB = Ext.Mod.GetMod(modBUUID)
+
+        if not modA or not modB or not modA.Info or not modB.Info then
+            MUWarn(0, "Could not get mod info for mod UUID: " .. modAUUID .. " or " .. modBUUID)
+            return false
+        end
+
+        if not modA.Info.Name or not modB.Info.Name then
+            MUWarn(0, "Could not get mod name for mod UUID: " .. modAUUID .. " or " .. modBUUID)
+            return false
+        end
+
         return modA.Info.Name < modB.Info.Name
     end)
 end
