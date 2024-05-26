@@ -33,3 +33,38 @@ end)
 Ext.RegisterNetListener("MU_Server_Should_Load_Templates", function(channel, payload)
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
 end)
+
+Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
+    if not modId then
+        MUWarn(0, "No mod ID provided.\nUsage: !" .. cmd .. " <modGuid>")
+
+        return
+    end
+
+    local mod = Ext.Mod.GetMod(modId)
+    if not mod then
+        MUWarn(0, "Mod not found for mod ID: " .. modId)
+        return
+    end
+
+    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+    
+    local modTemplates = ModsTemplates[modId]
+    if not modTemplates then
+        MUWarn(0, "No templates found for mod ID: " .. modId)
+        return
+    end
+
+    if MCMGet("delete_items") then
+        MUWarn(0, "Deleting " .. #modTemplates .. " item templates from mod " .. mod.Info.Name)
+        DeleteTemplatesForMod(modTemplates)
+        MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
+    end
+    if MCMGet("remove_statuses") then
+        MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
+        RemoveStatusesFromMod(modId)
+    end
+
+    Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
+        mod.Info.Name .. "' was uninstalled successfully!\nYou may now safely disable it in your mod manager.")
+end)

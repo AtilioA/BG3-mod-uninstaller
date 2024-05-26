@@ -20,11 +20,13 @@ function RemoveStatusesFromMod(modGuid)
     MUSuccess(0, "Removed all statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
 end
 
-Ext.RegisterConsoleCommand("MU_RemoveStatuses", function(cmd, modGuid)
+Ext.RegisterConsoleCommand("MU_Remove_Statuses", function(cmd, modGuid)
     if not modGuid or not Ext.Mod.IsModLoaded(modGuid) then
         MUWarn(0, "Usage: !" .. cmd .. " <modGuid>")
         return
     end
+
+    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
 
     RemoveStatusesFromMod(modGuid)
 end)

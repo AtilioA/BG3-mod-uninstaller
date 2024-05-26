@@ -53,3 +53,20 @@ function DeleteTemplatesForMod(modsTemplatesData)
         DeleteAllMatchingTemplates(entities, templateData.Id)
     end
 end
+
+Ext.RegisterConsoleCommand("MU_Delete_Templates_For_Mod", function(cmd, modId)
+    if not modId then
+        MUWarn(0, "Usage: !" .. cmd .. " <modId>")
+        return
+    end
+
+    VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+
+    local modTemplates = ModsTemplates[modId]
+    if not modTemplates then
+        MUWarn(0, "No templates found for mod ID: " .. modId)
+        return
+    end
+
+    DeleteTemplatesForMod(modTemplates)
+end)
