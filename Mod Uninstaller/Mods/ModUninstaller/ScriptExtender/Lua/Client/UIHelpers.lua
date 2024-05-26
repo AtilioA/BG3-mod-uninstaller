@@ -2,14 +2,22 @@ UIHelpers = {}
 
 function UIHelpers:PopulateModsToUninstallOptions()
     local modsToUninstallOptions = {}
+    MUDebug(1, "Starting to populate mods to uninstall options.")
 
     for modId, templates in pairs(ModsTemplates) do
+        MUDebug(2, "Checking modId: " .. modId)
         -- Check if the table is not empty
         if next(templates) ~= nil then
+            MUSuccess(1, "Templates found for modId: " .. modId)
+            local serializedTemplates = Ext.DumpExport(templates)
+            MUDebug(2, serializedTemplates)
             local modName = Ext.Mod.GetMod(modId).Info.Name
             -- Needed since we cannot set 'label + value' for the combo box, so we need to store both in the option and extract id later
             local modOption = modName .. " (" .. modId .. ")"
+            MUDebug(2, "Mod option created: " .. modOption)
             table.insert(modsToUninstallOptions, modOption)
+        else
+            MUDebug(2, "No templates found for modId: " .. modId)
         end
     end
 
@@ -78,4 +86,5 @@ function UIHelpers:SortModUUIDTableByModName(modUUIDTable)
         return modA.Info.Name < modB.Info.Name
     end)
 end
+
 return UIHelpers

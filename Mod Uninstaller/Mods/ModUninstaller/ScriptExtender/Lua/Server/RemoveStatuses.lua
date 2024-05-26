@@ -10,6 +10,11 @@ end
 
 function RemoveStatusesFromMod(modGuid)
     local statuses = GetStatusesFromMod(modGuid)
+    if #statuses == 0 then
+        MUSuccess(0, "Mod " .. Ext.Mod.GetMod(modGuid).Info.Name .. " has no statuses")
+        return
+    end
+
     MUWarn(0, "Removing " .. #statuses .. " statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)
     RemoveStatusesFromEntities(statuses)
     MUSuccess(0, "Removed all statuses from all entities for mod " .. Ext.Mod.GetMod(modGuid).Info.Name)

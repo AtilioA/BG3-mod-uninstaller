@@ -11,11 +11,14 @@ local function isVanillaFilename(filename)
         "Public/Honour",
         "Mods/Honour"
     }
+
     for _, path in pairs(vanillaPaths) do
         if string.find(filename, path) then
             return true
         end
     end
+
+    MUDebug(3, "Filename does not match any vanilla paths")
     return false
 end
 
@@ -57,12 +60,16 @@ end
 
 function GetVanillaAndModsTemplates()
     local function getModIdsTable()
+        MUPrint(1, "Fetching mod load order")
         local loadOrder = Ext.Mod.GetLoadOrder()
         local modIds = {}
         for _, modId in pairs(loadOrder) do
             local mod = Ext.Mod.GetMod(modId)
             if mod then
+                MUPrint(2, "Adding mod to modIds table: " .. modId .. " (" .. mod.Info.Name .. ")")
                 modIds[modId] = {}
+            else
+                MUWarn(2, "Mod not found for modId: " .. modId)
             end
         end
         return modIds
@@ -71,7 +78,13 @@ function GetVanillaAndModsTemplates()
     local function addTemplateToMod(modIds, templateData)
         for modId, _ in pairs(modIds) do
             local mod = Ext.Mod.GetMod(modId)
+            MUDebug(3,
+                "Checking if template " ..
+                templateData.FileName .. " matches mod " .. modId .. " (" .. mod.Info.Name .. ")")
             if mod and string.find(templateData.FileName, mod.Info.Directory) then
+                MUPrint(2,
+                    "Template matches mod directory: " ..
+                    modId .. "(" .. mod.Info.Name .. ") in " .. templateData.FileName)
                 table.insert(modIds[modId], {
                     Id = templateData.Id,
                     Name = templateData.Name,
@@ -85,6 +98,7 @@ function GetVanillaAndModsTemplates()
     end
 
     local function formatVanillaTemplates(vanillaTemplates)
+        MUPrint(1, "Formatting vanilla templates")
         local formattedVanillaTemplates = {}
         for _, templateData in pairs(vanillaTemplates) do
             formattedVanillaTemplates[templateData.Id] = {
@@ -99,6 +113,7 @@ function GetVanillaAndModsTemplates()
     end
 
     local function assignTemplatesToMods(moddedTemplates)
+        MUPrint(1, "Assigning templates to mods")
         local modIds = getModIdsTable()
         for _, templateData in pairs(moddedTemplates) do
             addTemplateToMod(modIds, templateData)
@@ -106,8 +121,10 @@ function GetVanillaAndModsTemplates()
         return modIds
     end
 
+    MUPrint(1, "Getting all vanilla and modded templates")
     local vanillaTemplates, moddedTemplates = getAllVanillaAndModdedTemplates()
 
+    MUPrint(1, "Formatting and assigning templates")
     return formatVanillaTemplates(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
 end
 
