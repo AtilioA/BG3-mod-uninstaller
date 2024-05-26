@@ -68,11 +68,14 @@ function UIHelpers:Wrap(text, width)
 end
 
 function UIHelpers:SortModUUIDTableByModName(modUUIDTable)
+    if #modUUIDTable < 2 then
+        return modUUIDTable
+    end
+
     table.sort(modUUIDTable, function(a, b)
         local modA = Ext.Mod.GetMod(self:GetModToUninstallUUID(a))
         local modB = Ext.Mod.GetMod(self:GetModToUninstallUUID(b))
         return modA.Info.Name < modB.Info.Name
     end)
 end
-
 return UIHelpers
