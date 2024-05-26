@@ -1,6 +1,6 @@
 UI = {}
 UI.HasLoadedTemplates = false
-Ext.IMGUI.SetScale(1.5)
+
 -- Function to create a table with item info
 -- Courtesy of Aahz
 local function createItemInfoTable(tabHeader, icon, name, statName, description, descriptionWidth)
