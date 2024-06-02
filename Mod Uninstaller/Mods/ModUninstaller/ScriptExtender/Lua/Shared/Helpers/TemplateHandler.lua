@@ -58,6 +58,22 @@ local function getAllVanillaAndModdedTemplates()
     return vanillaTemplates, moddedTemplates
 end
 
+local function formatTemplateData(vanillaTemplates)
+    MUDebug(1, "Formatting template data")
+    local formattedTemplateData = {}
+    for _, templateData in pairs(vanillaTemplates) do
+        formattedTemplateData[templateData.Id] = {
+            Name = templateData.Name,
+            DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
+            Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
+            Stats = templateData.Stats,
+            Icon = templateData.Icon,
+        }
+    end
+    return formattedTemplateData
+end
+
+
 function GetVanillaAndModsTemplates()
     local function getModIdsTable()
         MUPrint(1, "Fetching mod load order")
@@ -97,21 +113,6 @@ function GetVanillaAndModsTemplates()
         end
     end
 
-    local function formatVanillaTemplates(vanillaTemplates)
-        MUPrint(1, "Formatting vanilla templates")
-        local formattedVanillaTemplates = {}
-        for _, templateData in pairs(vanillaTemplates) do
-            formattedVanillaTemplates[templateData.Id] = {
-                Name = templateData.Name,
-                DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
-                Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
-                Stats = templateData.Stats,
-                Icon = templateData.Icon,
-            }
-        end
-        return formattedVanillaTemplates
-    end
-
     local function assignTemplatesToMods(moddedTemplates)
         MUPrint(1, "Assigning templates to mods")
         local modIds = getModIdsTable()
@@ -125,7 +126,7 @@ function GetVanillaAndModsTemplates()
     local vanillaTemplates, moddedTemplates = getAllVanillaAndModdedTemplates()
 
     MUPrint(1, "Formatting and assigning templates")
-    return formatVanillaTemplates(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
+    return formatTemplateData(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
 end
 
 local function dumpAllVanillaTemplates()
