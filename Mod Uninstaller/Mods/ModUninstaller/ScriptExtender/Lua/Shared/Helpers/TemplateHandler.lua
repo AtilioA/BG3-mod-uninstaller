@@ -39,7 +39,6 @@ local function getAllVanillaTemplates()
     return vanillaTemplates
 end
 
-
 local function getAllVanillaAndModdedTemplates()
     local templates = Ext.Template.GetAllRootTemplates()
 
@@ -73,6 +72,25 @@ local function formatTemplateData(vanillaTemplates)
     return formattedTemplateData
 end
 
+local function checkDirectoryInPath(filePath, directory)
+    -- Normalize the file path and directory to handle differences in path separators, just in case
+    local normalizedFilePath = filePath:gsub("\\", "/")
+    local normalizedDirectory = directory:gsub("\\", "/")
+
+    -- Find the index of "Data/Public" in the file path; mod Directory should be immediately after this
+    local startIndex = normalizedFilePath:find("Data/Public")
+
+    if not startIndex then
+        return false
+    end
+
+    -- Get the first directory immediately after "Data/Public"
+    local relevantPath = normalizedFilePath:sub(startIndex + #"Data/Public/")
+    local firstDirectory = relevantPath:match("([^/]+)")
+
+    -- Check if the first directory matches the given directory
+    return firstDirectory == normalizedDirectory
+end
 
 function GetVanillaAndModsTemplates()
     local function getModIdsTable()
@@ -97,7 +115,7 @@ function GetVanillaAndModsTemplates()
             MUDebug(3,
                 "Checking if template " ..
                 templateData.FileName .. " matches mod " .. modId .. " (" .. mod.Info.Name .. ")")
-            if mod and string.find(templateData.FileName, mod.Info.Directory) then
+            if mod and checkDirectoryInPath(templateData.FileName, mod.Info.Directory) then
                 MUPrint(2,
                     "Template matches mod directory: " ..
                     modId .. "(" .. mod.Info.Name .. ") in " .. templateData.FileName)
