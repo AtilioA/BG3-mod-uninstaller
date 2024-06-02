@@ -57,17 +57,26 @@ local function getAllVanillaAndModdedTemplates()
     return vanillaTemplates, moddedTemplates
 end
 
-local function formatTemplateData(vanillaTemplates)
-    MUDebug(1, "Formatting template data")
+local function formatTemplateData(templateData)
+    local description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle)
+    if not description or description == "" then
+        description = Ext.Loca.GetTranslatedString(templateData.Description.Handle.Handle)
+    end
+
+    return {
+        Description = description,
+        DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
+        Icon = templateData.Icon,
+        Id = templateData.Id,
+        Name = templateData.Name,
+        Stats = templateData.Stats,
+    }
+end
+
+local function formatVanillaTemplates(vanillaTemplates)
     local formattedTemplateData = {}
     for _, templateData in pairs(vanillaTemplates) do
-        formattedTemplateData[templateData.Id] = {
-            Name = templateData.Name,
-            DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
-            Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
-            Stats = templateData.Stats,
-            Icon = templateData.Icon,
-        }
+        formattedTemplateData[templateData.Id] = formatTemplateData(templateData)
     end
     return formattedTemplateData
 end
@@ -119,14 +128,7 @@ function GetVanillaAndModsTemplates()
                 MUPrint(2,
                     "Template matches mod directory: " ..
                     modId .. "(" .. mod.Info.Name .. ") in " .. templateData.FileName)
-                table.insert(modIds[modId], {
-                    Id = templateData.Id,
-                    Name = templateData.Name,
-                    DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
-                    Description = Ext.Loca.GetTranslatedString(templateData.TechnicalDescription.Handle.Handle),
-                    Stats = templateData.Stats,
-                    Icon = templateData.Icon,
-                })
+                table.insert(modIds[modId], formatTemplateData(templateData))
             end
         end
     end
@@ -144,7 +146,7 @@ function GetVanillaAndModsTemplates()
     local vanillaTemplates, moddedTemplates = getAllVanillaAndModdedTemplates()
 
     MUPrint(1, "Formatting and assigning templates")
-    return formatTemplateData(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
+    return formatVanillaTemplates(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
 end
 
 local function dumpAllVanillaTemplates()
@@ -157,3 +159,35 @@ local function dumpAllVanillaTemplates()
 end
 
 Ext.RegisterConsoleCommand("MU_DVT", function(cmd) dumpAllVanillaTemplates() end)
+
+-- function GetTemplatesByStats(modData)
+--     local templates = Ext.Template.GetAllRootTemplates()
+--     local filteredTemplates = {}
+
+--     for _, templateData in pairs(templates) do
+--         if templateData.TemplateType == 'item' then
+--             for statType, statEntries in pairs(modData) do
+--                 if type(statEntries) == "table" then
+--                     for _, statName in ipairs(statEntries) do
+--                         if templateData.Stats == statName then
+--                             table.insert(filteredTemplates, templateData)
+--                         end
+--                     end
+--                 end
+--             end
+--         end
+--     end
+
+--     return formatTemplateData(filteredTemplates)
+-- end
+
+-- local statsEntriesByMod = GetStatsEntriesByMod({ "Armor", "Weapon", "Shield", "StatusData" })
+
+-- for modId, modData in pairs(statsEntriesByMod) do
+--     _D(modId)
+--     _D(GetTemplatesByStats(statsEntriesByMod[modId].Entries))
+-- end
+
+-- Example usage:
+-- local statNames = { ["Stat1"] = true, ["Stat2"] = true }
+-- local templates = getTemplatesByStats(statNames)

@@ -238,10 +238,10 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
     local buttonLabel = buttonGroup:AddText(
         "For performance reasons, mod data is only parsed after clicking this button:")
     buttonLabel.IDContext = "LoadTemplatesLabel"
-    local button = buttonGroup:AddButton("Parse mod data")
-    button.IDContext = "LoadTemplatesButton"
+    local parseButton = buttonGroup:AddButton("Parse mod data")
+    parseButton.IDContext = "LoadTemplatesButton"
 
-    button.OnClick = function()
+    parseButton.OnClick = function()
         if not UI.HasLoadedTemplates then
             VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
             -- Needed cause some load orders might be too big to send via net messages
