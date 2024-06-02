@@ -1,5 +1,5 @@
 RequireFiles("Shared/Data/", {
     "VanillaStatuses",
     "VanillaTemplatesIDs",
-    "StatByMod"
+    -- "StatByMod"
 })

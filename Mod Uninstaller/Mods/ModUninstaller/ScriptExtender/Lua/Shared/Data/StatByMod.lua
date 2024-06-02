@@ -9,7 +9,6 @@ local function logUnknownMod(statEntry, stat, mod)
         _D("  Mod Info Name: ?")
     end
 end
-
 --- Add a stats entry to the statsEntriesByMod table
 ---@param statsEntriesByMod table<string, table>
 ---@param modId string - The ID of the mod
@@ -68,10 +67,6 @@ function GetStatsEntriesByMod(types)
 end
 
 local function analyzeStatsEntries()
-    if Ext.IsServer() then
-        return
-    end
-
     local function shouldSkipMod(modName)
         local skipMods = { "Shared", "Gustav", "GustavDev", "SharedDev" }
         for _, skipMod in ipairs(skipMods) do
@@ -103,4 +98,4 @@ local function analyzeStatsEntries()
     end
 end
 
-analyzeStatsEntries()
+-- analyzeStatsEntries()
