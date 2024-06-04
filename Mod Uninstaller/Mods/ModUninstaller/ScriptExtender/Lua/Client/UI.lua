@@ -148,28 +148,28 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     return button
 end
 
-local function clearTemplatesGroup(templatesGroup)
-    if not templatesGroup then
+local function clearModDataGroup(modDataGroup)
+    if not modDataGroup then
         return
     end
-    for _, child in ipairs(templatesGroup.Children or {}) do
+    for _, child in ipairs(modDataGroup.Children or {}) do
         child:Destroy()
     end
 end
 
-local function renderTemplates(templatesGroup, selectedModUUID)
+local function renderTemplates(modDataGroup, selectedModUUID)
     local templates = ModsTemplates[selectedModUUID]
     if #templates == 0 then
         return
     end
 
-    local templateText = templatesGroup:AddText(
+    local templateText = modDataGroup:AddText(
         "These items will be deleted from your save if you click the 'Uninstall' button:")
     templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
-    templateText.IDContext = "TemplateText"
+    templateText.IDContext = "TemplateText" .. selectedModUUID
 
     for _, template in ipairs(templates) do
-        createItemInfoTable(templatesGroup,
+        createItemInfoTable(modDataGroup,
             template.Icon or "",
             template.DisplayName or template.Name or "<Name>",
             template.Stats or "<StatName>",
@@ -177,28 +177,37 @@ local function renderTemplates(templatesGroup, selectedModUUID)
     end
 end
 
-local function renderStatuses(templatesGroup, selectedModUUID)
-    local statuses = GetStatusesFromMod(selectedModUUID)
-    if #statuses == 0 then
+local function getStatTypeText(entryType)
+    local texts = {
+        StatusData = "These statuses will be removed from all entities in your save if you click the 'Uninstall' button:",
+        SpellData = "These spells will be removed from all entities if you click the 'Uninstall' button:",
+        PassiveData = "These passives will be removed from all entities if you click the 'Uninstall' button:"
+    }
+    return texts[entryType] or "These stats will be removed from all entities if you click the 'Uninstall' button:"
+end
+
+local function renderStatEntries(modDataGroup, selectedModUUID)
+    local stats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })[selectedModUUID]
+    if not stats or table.isEmpty(stats) then
         return
     end
 
-    local statusText = templatesGroup:AddText(
-        "These statuses will be removed from all entities in your save if you click the 'Uninstall' button:")
-    statusText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
-    statusText.IDContext = "StatusText"
-
-    for _, status in ipairs(statuses) do
-        local statusStat = Ext.Stats.Get(status)
-        createItemInfoTable(templatesGroup,
-            statusStat.Icon or "",
-            Ext.Loca.GetTranslatedString(statusStat.DisplayName) or statusStat.Name or "<Name>",
-            statusStat.Name or "<StatusName>",
-            Ext.Loca.GetTranslatedString(statusStat.Description) or "No description provided.")
+    for entryType, statEntries in pairs(stats.Entries) do
+        local statText = modDataGroup:AddText(getStatTypeText(entryType))
+        statText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
+        statText.IDContext = "StatText" .. selectedModUUID
+        for _, statEntry in ipairs(statEntries) do
+            local stat = Ext.Stats.Get(statEntry)
+            createItemInfoTable(modDataGroup,
+                stat.Icon or "",
+                Ext.Loca.GetTranslatedString(stat.DisplayName) or stat.Name or "<Name>",
+                stat.Name or "<StatName>",
+                Ext.Loca.GetTranslatedString(stat.Description) or "No description provided.")
+        end
     end
 end
 
-local function handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
+local function handleComboBoxChange(value, modDataGroup, modsToUninstallOptions)
     -- Check if the selected option is the placeholder and do nothing if it is
     if value.SelectedIndex == 0 then
         return
@@ -207,32 +216,32 @@ local function handleComboBoxChange(value, templatesGroup, modsToUninstallOption
     local selectedMod = modsToUninstallOptions[value.SelectedIndex + 1]
     local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
 
-    renderTemplates(templatesGroup, selectedModUUID)
-    -- renderStatuses(templatesGroup, selectedModUUID)
+    renderTemplates(modDataGroup, selectedModUUID)
+    renderStatEntries(modDataGroup, selectedModUUID)
 end
 
-local function createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
     -- Group that will contain the templates elements for the selected mod; useful for destroying the elements when changing the selected mod
-    local templatesGroup = tabHeader:AddGroup("Templates")
+    local modDataGroup = tabHeader:AddGroup("Templates")
     -- Handle the change event for the combo box, which will display the templates for the selected mod
     modsComboBox.OnChange = function(value)
-        -- First, destroy all the children of the templatesGroup before rendering new ones
+        -- First, destroy all the children of the modDataGroup before rendering new ones
         -- TODO: refactor this mess after v17 is released smh
         if DevelReady then
-            clearTemplatesGroup(templatesGroup)
-        elseif templatesGroup then
-            templatesGroup:Destroy()
+            clearModDataGroup(modDataGroup)
+        elseif modDataGroup then
+            modDataGroup:Destroy()
         end
-        templatesGroup = tabHeader:AddGroup("Templates")
-        templatesGroup.IDContext = "TemplatesGroup"
-        handleComboBoxChange(value, templatesGroup, modsToUninstallOptions)
+        modDataGroup = tabHeader:AddGroup("Templates")
+        modDataGroup.IDContext = "ModDataGroup"
+        handleComboBoxChange(value, modDataGroup, modsToUninstallOptions)
     end
-    return templatesGroup
+    return modDataGroup
 end
 
 local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
     local buttonGroup = tabHeader:AddGroup("Parse mod data")
-    buttonGroup.IDContext = "LoadTemplatesGroup"
+    buttonGroup.IDContext = "LoadModDataGroup"
     local buttonSeparator = buttonGroup:AddSeparatorText("REQUIRED: Load data from mods")
     buttonSeparator.IDContext = "LoadTemplatesSeparator"
     local buttonLabel = buttonGroup:AddText(
@@ -243,6 +252,7 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
 
     parseButton.OnClick = function()
         if not UI.HasLoadedTemplates then
+            -- ModData =
             VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
             -- Needed cause some load orders might be too big to send via net messages
             Ext.Net.PostMessageToServer("MU_Server_Should_Load_Templates", "")
@@ -271,7 +281,7 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
 
                 local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
                 local uninstallButton = createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-                local templatesGroup = createTemplatesGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+                local modDataGroup = createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
                 buttonGroup:Destroy()
             end
         elseif UI.HasTemplates then

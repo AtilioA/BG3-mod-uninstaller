@@ -3,5 +3,6 @@ RequireFiles("Client/", {
     "UI",
 })
 
+-- StatsAndTemplates = {}
 VanillaTemplates = {}
 ModsTemplates = {}

@@ -125,7 +125,7 @@ function GetVanillaAndModsTemplates()
                 "Checking if template " ..
                 templateData.FileName .. " matches mod " .. modId .. " (" .. mod.Info.Name .. ")")
             if mod and checkDirectoryInPath(templateData.FileName, mod.Info.Directory) then
-                MUPrint(2,
+                MUPrint(3,
                     "Template matches mod directory: " ..
                     modId .. "(" .. mod.Info.Name .. ") in " .. templateData.FileName)
                 table.insert(modIds[modId], formatTemplateData(templateData))
