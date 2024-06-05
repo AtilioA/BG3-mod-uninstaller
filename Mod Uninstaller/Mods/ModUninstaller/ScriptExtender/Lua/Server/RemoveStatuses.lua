@@ -8,8 +8,13 @@ function RemoveStatusesFromEntities(statuses)
     end
 end
 
-function RemoveStatusesFromMod(modGuid)
+function RemoveStatusesForMod(modGuid)
     local statuses = GetStatusesFromMod(modGuid)
+
+    if not statuses or table.isEmpty(statuses) then
+        MUSuccess(0, "Mod " .. Ext.Mod.GetMod(modGuid).Info.Name .. " has no statuses")
+        return
+    end
 
     -- Filter out vanilla statuses
     local modStatuses = {}
@@ -41,5 +46,5 @@ Ext.RegisterConsoleCommand("MU_Remove_Statuses", function(cmd, modGuid)
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
     ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
 
-    RemoveStatusesFromMod(modGuid)
+    RemoveStatusesForMod(modGuid)
 end)

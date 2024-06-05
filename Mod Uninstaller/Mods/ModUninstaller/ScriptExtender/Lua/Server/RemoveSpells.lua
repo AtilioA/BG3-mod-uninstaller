@@ -11,9 +11,8 @@ function RemoveSpellsFromEntities(spells)
     end
 end
 
-function RemoveSpellsFromMod(modGuid)
+function RemoveSpellsForMod(modGuid)
     local spells = GetSpellsFromMod(modGuid)
-    _D(spells)
 
     if not spells or table.isEmpty(spells) then
         MUSuccess(0, "Mod " .. Ext.Mod.GetMod(modGuid).Info.Name .. " has no spells")
@@ -49,5 +48,5 @@ Ext.RegisterConsoleCommand("MU_Remove_Spells", function(cmd, modGuid)
 
     -- VanillaSpells, ModsSpells = GetVanillaAndModsSpells()
 
-    RemoveSpellsFromMod(modGuid)
+    RemoveSpellsForMod(modGuid)
 end)

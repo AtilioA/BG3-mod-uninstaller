@@ -36,11 +36,11 @@
                             }
                         },
                         {
-                            "Id": "remove_statuses",
-                            "Name": "Remove statuses",
+                            "Id": "remove_stats",
+                            "Name": "Remove stats (statuses, spells, passives)",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "Remove statuses added by the mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
+                            "Description": "Remove stats added by the mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
                             "Handles": {
                                 "DescriptionHandle": "h0700eec13ba440c3b8f35b3739fca0b08253",
                                 "NameHandle": "h25aff7b603e348ba8c9fdb967f1aa8f4gg25"

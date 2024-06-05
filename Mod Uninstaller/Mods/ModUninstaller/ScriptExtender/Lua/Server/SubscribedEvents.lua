@@ -7,18 +7,32 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
             Ext.Json.Stringify({ modUUID = data.modUUID, error = "Mod is not loaded" }))
         return
     end
-    local modTemplates = data.modTemplates
+
+    UninstallMod(uuid)
+end)
+
+function UninstallMod(modUUID)
+    local mod = Ext.Mod.GetMod(modUUID)
+    if not Ext.Mod.IsModLoaded(modUUID) then
+        Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed",
+            Ext.Json.Stringify({ modUUID = modUUID, error = "Mod is not loaded" }))
+        return
+    end
 
     local success, err = xpcall(function()
         if MCMGet("delete_items") then
-            MUWarn(0, "Deleting " .. #modTemplates .. " item templates from mod " .. mod.Info.Name)
-            DeleteTemplatesForMod(modTemplates)
+            MUWarn(0, "Deleting " .. #ModsTemplates[modUUID] .. " item templates from mod " .. mod.Info.Name)
+            DeleteTemplatesForMod(modUUID)
             MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
         end
-        -- if MCMGet("remove_statuses") then
-        --     MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
-        --     RemoveStatusesFromMod(uuid)
-        -- end
+        if MCMGet("remove_stats") then
+            MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
+            RemoveStatusesForMod(modUUID)
+            MUWarn(0, "Removing spells from mod " .. mod.Info.Name)
+            RemoveSpellsForMod(modUUID)
+            -- MUWarn(0, "Removing passives from mod " .. mod.Info.Name)
+            -- RemovePassivesForMod(modUUID)
+        end
         MUWarn(0,
             "Due to SE limitations, removing statuses has been temporarily disabled.\nTrack Mod Uninstaller on the Nexus to see when it will be re-enabled.")
     end, debug.traceback)
@@ -27,11 +41,11 @@ Ext.RegisterNetListener("MU_Request_Server_Uninstall_Mod", function(channel, pay
         Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
             mod.Info.Name ..
             "' was uninstalled successfully!\nYou may now disable it in your mod manager if it doesn't add statuses.")
-        Ext.Net.BroadcastMessage("MU_Uninstalled_Mod", Ext.Json.Stringify({ modUUID = data.modUUID }))
+        Ext.Net.BroadcastMessage("MU_Uninstalled_Mod", Ext.Json.Stringify({ modUUID = modUUID }))
     else
-        Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = data.modUUID, error = err }))
+        Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = modUUID, error = err }))
     end
-end)
+end
 
 Ext.RegisterNetListener("MU_Server_Should_Load_Templates", function(channel, payload)
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
@@ -60,17 +74,5 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
         return
     end
 
-    if MCMGet("delete_items") then
-        MUWarn(0, "Deleting " .. #modTemplates .. " item templates from mod " .. mod.Info.Name)
-        DeleteTemplatesForMod(modTemplates)
-        MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
-    end
-    -- if MCMGet("remove_statuses") then
-    --     MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
-    --     RemoveStatusesFromMod(modId)
-    -- end
-
-    Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
-        mod.Info.Name ..
-        "' was uninstalled successfully!\nYou may now disable it in your mod manager if it doesn't add statuses.")
+    UninstallMod(modId)
 end)

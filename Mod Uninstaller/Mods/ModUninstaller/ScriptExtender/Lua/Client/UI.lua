@@ -129,7 +129,6 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         -- Request the server to take actions to help uninstalling the mod
         Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
             modUUID = selectedModUUID,
-            modTemplates = ModsTemplates[selectedModUUID]
         }))
     end
 

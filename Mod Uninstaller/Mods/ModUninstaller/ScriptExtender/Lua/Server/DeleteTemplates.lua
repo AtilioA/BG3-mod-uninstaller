@@ -45,8 +45,9 @@ function DeleteAllMatchingTemplates(entities, templateID)
 end
 
 --- Delete a table of templates by ID
----@param modsTemplatesData table<number, table>
-function DeleteTemplatesForMod(modsTemplatesData)
+---@param uuid string The mod UUID
+function DeleteTemplatesForMod(uuid)
+    local modsTemplatesData = ModsTemplates[uuid]
     local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
     for _, templateData in pairs(modsTemplatesData) do
         MUWarn(2, "Processing template ID: " .. templateData.Id)
