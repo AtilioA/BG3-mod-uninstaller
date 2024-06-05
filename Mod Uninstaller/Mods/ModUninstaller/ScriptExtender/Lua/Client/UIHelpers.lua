@@ -4,22 +4,20 @@ function UIHelpers:PopulateModsToUninstallOptions()
     local modsToUninstallOptions = {}
     MUDebug(1, "Starting to populate mods to uninstall options.")
 
-    local statsEntriesByMod = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
-
     -- STUB: Combine ModsTemplates and StatsEntriesByMod
     -- NOTE: this is a temporary solution to get all mods that have either templates or stats, and will be refactored
     local combinedModsData = {}
     for modId, templates in pairs(ModsTemplates) do
         combinedModsData[modId] = true
     end
-    for modId, _ in pairs(statsEntriesByMod) do
+    for modId, _ in pairs(ModsStats) do
         combinedModsData[modId] = true
     end
 
     for modId, _ in pairs(combinedModsData) do
         MUDebug(2, "Checking modId: " .. modId)
         local templates = ModsTemplates[modId]
-        local stats = statsEntriesByMod[modId]
+        local stats = ModsStats[modId]
 
         -- Check if the mod has either templates or stats
         if (templates and not table.isEmpty(templates)) or (stats and not table.isEmpty(stats)) then

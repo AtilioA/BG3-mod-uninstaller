@@ -6,3 +6,4 @@ RequireFiles("Server/", {
 
 VanillaTemplates = {}
 ModsTemplates = {}
+ModsStats = {}

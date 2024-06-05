@@ -35,6 +35,7 @@ end)
 
 Ext.RegisterNetListener("MU_Server_Should_Load_Templates", function(channel, payload)
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+    ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
 end)
 
 Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
@@ -51,6 +52,7 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
     end
 
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+    ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
 
     local modTemplates = ModsTemplates[modId]
     if not modTemplates then

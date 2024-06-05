@@ -39,6 +39,7 @@ Ext.RegisterConsoleCommand("MU_Remove_Statuses", function(cmd, modGuid)
     end
 
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+    ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
 
     RemoveStatusesFromMod(modGuid)
 end)

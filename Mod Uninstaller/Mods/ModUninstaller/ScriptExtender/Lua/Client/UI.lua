@@ -187,7 +187,9 @@ local function getStatTypeText(entryType)
 end
 
 local function renderStatEntries(modDataGroup, selectedModUUID)
-    local stats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })[selectedModUUID]
+    local stats = ModsStats[selectedModUUID]
+    MUDebug(1, "Stats for mod " .. selectedModUUID .. ":")
+    MUDebug(1, stats)
     if not stats or table.isEmpty(stats) then
         return
     end
@@ -252,8 +254,8 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
 
     parseButton.OnClick = function()
         if not UI.HasLoadedTemplates then
-            -- ModData =
             VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+            ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
             -- Needed cause some load orders might be too big to send via net messages
             Ext.Net.PostMessageToServer("MU_Server_Should_Load_Templates", "")
 

@@ -61,6 +61,7 @@ Ext.RegisterConsoleCommand("MU_Delete_Templates_For_Mod", function(cmd, modId)
     end
 
     VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+    ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
 
     local modTemplates = ModsTemplates[modId]
     if not modTemplates then

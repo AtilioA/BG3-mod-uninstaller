@@ -6,3 +6,4 @@ RequireFiles("Client/", {
 -- StatsAndTemplates = {}
 VanillaTemplates = {}
 ModsTemplates = {}
+ModsStats = {}

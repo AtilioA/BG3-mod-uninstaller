@@ -119,22 +119,32 @@ function GetStatsLoadedByMod(modGuid, type)
     return modStats
 end
 
--- Refactor to call GetStatsEntriesByMod only once
-
-function GetStatusesFromMod(modGuid)
-    local statsEntriesByMod = GetStatsEntriesByMod({ "StatusData" })
-
-    if not statsEntriesByMod then
-        return
+function GetStatsFromMod(modGuid, statsType)
+    if not ModsStats or table.isEmpty(ModsStats) then
+        ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
     end
 
-    return statsEntriesByMod[modGuid]["StatusData"]
+    local modStatsEntries = ModsStats[modGuid]
+
+    if not modStatsEntries or table.isEmpty(modStatsEntries) then
+        return {}
+    end
+
+    if not modStatsEntries.Entries or table.isEmpty(modStatsEntries.Entries) then
+        return {}
+    end
+
+    return modStatsEntries.Entries[statsType]
+end
+
+function GetStatusesFromMod(modGuid)
+    return GetStatsFromMod(modGuid, "StatusData")
 end
 
 function GetSpellsFromMod(modGuid)
-    local statsEntriesByMod = GetStatsEntriesByMod({ "SpellData", "PassiveData" })
+    return GetStatsFromMod(modGuid, "SpellData")
+end
 
-    if not statsEntriesByMod then
-        return
-    end
+function GetPassivesFromMod(modGuid)
+    return GetStatsFromMod(modGuid, "PassiveData")
 end
