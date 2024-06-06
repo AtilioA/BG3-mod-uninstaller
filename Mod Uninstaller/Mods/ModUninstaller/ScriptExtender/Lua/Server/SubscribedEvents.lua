@@ -30,17 +30,15 @@ function UninstallMod(modUUID)
             RemoveStatusesForMod(modUUID)
             MUWarn(0, "Removing spells from mod " .. mod.Info.Name)
             RemoveSpellsForMod(modUUID)
-            -- MUWarn(0, "Removing passives from mod " .. mod.Info.Name)
-            -- RemovePassivesForMod(modUUID)
+            MUWarn(0, "Removing passives from mod " .. mod.Info.Name)
+            RemovePassivesForMod(modUUID)
         end
-        MUWarn(0,
-            "Due to SE limitations, removing statuses has been temporarily disabled.\nTrack Mod Uninstaller on the Nexus to see when it will be re-enabled.")
     end, debug.traceback)
 
     if success then
         Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
             mod.Info.Name ..
-            "' was uninstalled successfully!\nYou may now disable it in your mod manager if it doesn't add statuses.")
+            "' was uninstalled successfully!\nYou may now disable it in your mod manager.")
         Ext.Net.BroadcastMessage("MU_Uninstalled_Mod", Ext.Json.Stringify({ modUUID = modUUID }))
     else
         Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = modUUID, error = err }))

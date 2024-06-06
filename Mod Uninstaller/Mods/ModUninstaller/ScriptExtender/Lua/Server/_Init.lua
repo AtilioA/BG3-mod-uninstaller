@@ -2,7 +2,8 @@ RequireFiles("Server/", {
     "SubscribedEvents",
     "DeleteTemplates",
     "RemoveStatuses",
-    "RemoveSpells"
+    "RemoveSpells",
+    "RemovePassives",
 })
 
 VanillaTemplates = {}

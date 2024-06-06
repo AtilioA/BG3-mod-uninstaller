@@ -1,4 +1,4 @@
--- TODO: understand how to remove spells and passives from all entities
+-- TODO: understand how to remove spells from all entities
 
 function RemoveSpellsFromEntities(spells)
     local entities = Ext.Entity.GetAllEntitiesWithUuid()
@@ -6,7 +6,7 @@ function RemoveSpellsFromEntities(spells)
         MUWarn(2, "Removing spells from entity " .. Guid)
         for _, spell in ipairs(spells) do
             MUWarn(3, "Removing spell " .. spell .. " from entity " .. Guid)
-            Osi.RemoveSpell(Guid, spell, 1)
+            Osi.RemoveSpell(Guid, spell)
         end
     end
 end
@@ -19,6 +19,7 @@ function RemoveSpellsForMod(modGuid)
         return
     end
 
+    -- TODO: get vanilla spells
     -- Filter out vanilla spells
     local modSpells = {}
     for _, spell in ipairs(spells) do

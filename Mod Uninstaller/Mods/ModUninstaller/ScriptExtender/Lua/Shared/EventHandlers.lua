@@ -1,3 +1,0 @@
-EHandlers = {}
-
-return EHandlers

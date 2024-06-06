@@ -33,8 +33,6 @@ RequireFiles("Shared/", {
     "Data/_Init",
     "Helpers/_Init",
     "Classes/_Init",
-    "SubscribedEvents",
-    "EventHandlers",
 })
 
 local MODVERSION = Ext.Mod.GetMod(ModuleUUID).Info.ModVersion
