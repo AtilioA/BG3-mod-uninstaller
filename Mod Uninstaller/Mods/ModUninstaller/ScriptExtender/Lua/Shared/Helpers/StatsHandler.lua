@@ -79,44 +79,20 @@ function GetStatsEntriesByMod(types)
     for _, type in ipairs(types) do
         processStatsType(statsEntriesByMod, type)
     end
-    return statsEntriesByMod
-end
 
---- Get stats loaded by a specific mod
----@param modGuid string The UUID of the mod
----@param type string The type of stats to retrieve (optional)
----@return table<string> - The names of the stats loaded by the mod
-function GetStatsLoadedByMod(modGuid, type)
-    local loadOrder = Ext.Mod.GetLoadOrder()
-    local modIndex = nil
-
-    -- Find the index of the specified mod in the load order
-    for index, guid in ipairs(loadOrder) do
-        if guid == modGuid then
-            modIndex = index
-            break
+    for modId, modData in pairs(statsEntriesByMod) do
+        for statType, statEntries in pairs(modData.Entries) do
+            table.sort(statEntries, function(a, b)
+                local statA = Ext.Stats.Get(a)
+                local statB = Ext.Stats.Get(b)
+                local aName = Ext.Loca.GetTranslatedString(statA.DisplayName) or statA.Name
+                local bName = Ext.Loca.GetTranslatedString(statB.DisplayName) or statB.Name
+                return aName < bName
+            end)
         end
     end
 
-    if not modIndex then
-        -- Mod not found in load order
-        return {}
-    end
-
-    local allStatsBeforeCurrentMod = Ext.Stats.GetStatsLoadedBefore(modGuid, type)
-    local allStatsBeforeNextMod
-
-    if modIndex == #loadOrder then
-        -- If the mod is the last in the load order, there is no mod after it, so we get all stats
-        allStatsBeforeNextMod = Ext.Stats.GetStats(type)
-    else
-        local modAfterGuid = loadOrder[modIndex + 1]
-        allStatsBeforeNextMod = Ext.Stats.GetStatsLoadedBefore(modAfterGuid, type)
-    end
-
-    local modStats = table.getDifference(allStatsBeforeNextMod, allStatsBeforeCurrentMod)
-
-    return modStats
+    return statsEntriesByMod
 end
 
 function GetStatsFromMod(modGuid, statsType)
