@@ -142,11 +142,23 @@ function GetVanillaAndModsTemplates()
         return modIds
     end
 
+
     MUPrint(1, "Getting all vanilla and modded templates")
     local vanillaTemplates, moddedTemplates = getAllVanillaAndModdedTemplates()
 
-    MUPrint(1, "Formatting and assigning templates")
-    return formatVanillaTemplates(vanillaTemplates), assignTemplatesToMods(moddedTemplates)
+    local formattedVanillaTemplates = formatVanillaTemplates(vanillaTemplates)
+    local formattedModdedTemplates = assignTemplatesToMods(moddedTemplates)
+
+    -- Sort templates alphabetically by their DisplayName name
+    for modId, templates in pairs(formattedModdedTemplates) do
+        table.sort(templates, function(a, b)
+            local aName = a.DisplayName or a.Name
+            local bName = b.DisplayName or b.Name
+            return aName < bName
+        end)
+    end
+
+    return formattedVanillaTemplates, formattedModdedTemplates
 end
 
 local function dumpAllVanillaTemplates()
