@@ -2,6 +2,7 @@
 function MoveAllItemsFromContainer(containerUUID)
     local campChest = VCHelpers.Camp:GetChestTemplateUUID()
     local items = VCHelpers.Inventory:GetInventory(containerUUID)
+
     for _, item in pairs(items) do
         if item.Guid then
             local exact, total = Osi.GetStackAmount(item.Guid)
@@ -9,15 +10,11 @@ function MoveAllItemsFromContainer(containerUUID)
             MUPrint(0, "Moved item: " .. item.Guid .. " (" .. item.Name .. ") to camp chest.")
         end
     end
-
-    --- Delete the container after 1 second, just to be safe (in case the items are not moved in time)
-    VCHelpers.Timer:OnTime(1500, function()
-        MUWarn(0, "Deleting container: " .. containerUUID)
-        Osi.RequestDelete(containerUUID)
-    end)
 end
 
 function DeleteAllMatchingTemplates(entities, templateID)
+    local containersToDelete = {}
+
     for _, entity in pairs(entities) do
         if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateID then
             if Osi.IsContainer(entity.Uuid.EntityUuid) == 1 then
@@ -26,24 +23,33 @@ function DeleteAllMatchingTemplates(entities, templateID)
                     entity.ServerItem.Template.Name ..
                     " found with UUID: " .. entity.Uuid.EntityUuid .. ". Moving its items to camp chest.")
                 MoveAllItemsFromContainer(entity.Uuid.EntityUuid)
-                return
-            end
-            local itemOwner = VCHelpers.Inventory:GetHolder(entity.Uuid.EntityUuid)
-            if itemOwner then
+                table.insert(containersToDelete, entity.Uuid.EntityUuid)
+            else
+                local itemOwner = VCHelpers.Inventory:GetHolder(entity.Uuid.EntityUuid)
+                if itemOwner then
+                    MUWarn(0,
+                        "Item found in inventory of: " ..
+                        VCHelpers.Loca:GetDisplayName(itemOwner.Uuid.EntityUuid) ..
+                        " (" ..
+                        itemOwner.Uuid.EntityUuid ..
+                        ").")
+                end
                 MUWarn(0,
-                    "Item found in inventory of: " ..
-                    VCHelpers.Loca:GetDisplayName(itemOwner.Uuid.EntityUuid) ..
-                    " (" ..
-                    itemOwner.Uuid.EntityUuid ..
-                    ").")
+                    "Deleting entity: " .. entity.ServerItem.Template.Name .. " with UUID: " .. entity.Uuid.EntityUuid)
+                Osi.RequestDelete(entity.Uuid.EntityUuid)
             end
-            MUWarn(0,
-                "Deleting entity: " .. entity.ServerItem.Template.Name .. " with UUID: " .. entity.Uuid.EntityUuid)
-            Osi.RequestDelete(entity.Uuid.EntityUuid)
         end
     end
-end
 
+    -- Delete the containers after 2 seconds, just to be safe (in case the items are not moved in time)
+    -- NOTE: unfortunately, due to limitations in the event system, we can't listen to item move events for this, so we'll be using a timer
+    VCHelpers.Timer:OnTime(1500, function()
+        for _, uuid in pairs(containersToDelete) do
+            MUWarn(0, "Deleting container: " .. uuid)
+            Osi.RequestDelete(uuid)
+        end
+    end)
+end
 --- Delete a table of templates by ID
 ---@param uuid string The mod UUID
 function DeleteTemplatesForMod(uuid)
