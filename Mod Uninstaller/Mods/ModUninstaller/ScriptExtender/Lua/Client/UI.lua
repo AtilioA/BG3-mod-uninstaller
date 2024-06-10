@@ -6,18 +6,23 @@ UI.HasLoadedTemplates = false
 local function createItemInfoTable(tabHeader, items)
     local itemInfoTable = tabHeader:AddTable("ItemInfo", 2)
 
-    itemInfoTable.ScrollY = true
+    if MCMGet("add_vertical_scrollbar") then
+        itemInfoTable.ScrollY = true
+    else
+        itemInfoTable.ScrollY = false
+    end
+    
     itemInfoTable.Borders = true
     itemInfoTable.IDContext = "ItemInfoTable" .. tostring(tabHeader.IDContext)
 
     for _, item in ipairs(items) do
-    local row1 = itemInfoTable:AddRow("Row1")
-    local row2 = itemInfoTable:AddRow("Row2")
+        local row1 = itemInfoTable:AddRow("Row1")
+        local row2 = itemInfoTable:AddRow("Row2")
 
-    local nameCell = row1:AddCell("NameCell")
-    local statNameCell = row1:AddCell("StatNameCell")
-    local iconCell = row2:AddCell("IconCell")
-    local descriptionCell = row2:AddCell("DescriptionCell")
+        local nameCell = row1:AddCell("NameCell")
+        local statNameCell = row1:AddCell("StatNameCell")
+        local iconCell = row2:AddCell("IconCell")
+        local descriptionCell = row2:AddCell("DescriptionCell")
 
         local itemNameText = nameCell:AddText(item.name or "<Name>")
         itemNameText.IDContext = item.statName .. "_NameText"
@@ -225,12 +230,7 @@ local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOption
     -- Handle the change event for the combo box, which will display the templates for the selected mod
     modsComboBox.OnChange = function(value)
         -- First, destroy all the children of the modDataGroup before rendering new ones
-        -- TODO: refactor this mess after v17 is released smh
-        if DevelReady then
-            clearModDataGroup(modDataGroup)
-        elseif modDataGroup then
-            modDataGroup:Destroy()
-        end
+        clearModDataGroup(modDataGroup)
         modDataGroup = tabHeader:AddGroup("Templates")
         modDataGroup.IDContext = "ModDataGroup"
         handleComboBoxChange(value, modDataGroup, modsToUninstallOptions)
