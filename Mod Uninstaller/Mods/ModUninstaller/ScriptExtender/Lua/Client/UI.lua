@@ -3,12 +3,14 @@ UI.HasLoadedTemplates = false
 
 -- Function to create a table with item info
 -- Courtesy of Aahz
-local function createItemInfoTable(tabHeader, icon, name, statName, description, descriptionWidth)
+local function createItemInfoTable(tabHeader, items)
     local itemInfoTable = tabHeader:AddTable("ItemInfo", 2)
 
+    itemInfoTable.ScrollY = true
     itemInfoTable.Borders = true
-    itemInfoTable.SizingStretchSame = true
+    itemInfoTable.IDContext = "ItemInfoTable" .. tostring(tabHeader.IDContext)
 
+    for _, item in ipairs(items) do
     local row1 = itemInfoTable:AddRow("Row1")
     local row2 = itemInfoTable:AddRow("Row2")
 
@@ -17,36 +19,23 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
     local iconCell = row2:AddCell("IconCell")
     local descriptionCell = row2:AddCell("DescriptionCell")
 
-    local itemNameText = nameCell:AddText(name or "<Name>")
-    itemNameText.IDContext = statName .. "_NameText"
+        local itemNameText = nameCell:AddText(item.name or "<Name>")
+        itemNameText.IDContext = item.statName .. "_NameText"
 
-    local itemStatNameText = statNameCell:AddText(statName or "<StatName>")
-    itemStatNameText.IDContext = statName .. "_StatNameText"
+        local itemStatNameText = statNameCell:AddText(item.statName or "<StatName>")
+        itemStatNameText.IDContext = item.statName .. "_StatNameText"
 
-    if DevelReady then
-        -- TODO: replace with some question mark icon if the game has one
-        if icon and icon ~= "" then
-            local itemIcon = iconCell:AddImage(icon)
-            -- TODO: set size?
+        if item.icon and item.icon ~= "" then
+            local itemIcon = iconCell:AddImage(item.icon)
             if itemIcon then
-                itemIcon.IDContext = statName .. "_Icon"
+                itemIcon.IDContext = item.statName .. "_Icon"
             end
         end
-    else
-        local itemIcon = iconCell:AddText(icon or "")
-        local itemIconPlaceholder = iconCell:AddText(UIHelpers:Wrap(
-            "*This icon will be displayed when SE v17 is released*", descriptionWidth or 30))
-        if itemIcon then
-            itemIcon.IDContext = statName .. "_Icon"
-        end
-        if itemIconPlaceholder then
-            itemIconPlaceholder.IDContext = statName .. "_IconPlaceholder"
-        end
-    end
 
-    local itemDescription = descriptionCell:AddText(UIHelpers:Wrap(description or "No description provided.",
-        descriptionWidth or 33))
-    itemDescription.IDContext = statName .. "_DescriptionText"
+        local itemDescription = descriptionCell:AddText(UIHelpers:Wrap(item.description or "No description provided.",
+            item.descriptionWidth or 33))
+        itemDescription.IDContext = item.statName .. "_DescriptionText"
+    end
 
     return itemInfoTable
 end
@@ -167,13 +156,17 @@ local function renderTemplates(modDataGroup, selectedModUUID)
     templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
     templateText.IDContext = "TemplateText" .. selectedModUUID
 
+    local items = {}
     for _, template in ipairs(templates) do
-        createItemInfoTable(modDataGroup,
-            template.Icon or "",
-            template.DisplayName or template.Name or "<Name>",
-            template.Stats or "<StatName>",
-            template.Description or "No description provided.")
+        table.insert(items, {
+            icon = template.Icon or "",
+            name = template.DisplayName or template.Name or "<Name>",
+            statName = template.Stats or "<StatName>",
+            description = template.Description or "No description provided."
+        })
     end
+
+    createItemInfoTable(modDataGroup, items)
 end
 
 local function getStatTypeText(entryType)
@@ -197,14 +190,19 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
         local statText = modDataGroup:AddText(getStatTypeText(entryType))
         statText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
         statText.IDContext = "StatText" .. selectedModUUID
+
+        local items = {}
         for _, statEntry in ipairs(statEntries) do
             local stat = Ext.Stats.Get(statEntry)
-            createItemInfoTable(modDataGroup,
-                stat.Icon or "",
-                Ext.Loca.GetTranslatedString(stat.DisplayName) or stat.Name or "<Name>",
-                stat.Name or "<StatName>",
-                Ext.Loca.GetTranslatedString(stat.Description) or "No description provided.")
+            table.insert(items, {
+                icon = stat.Icon or "",
+                name = Ext.Loca.GetTranslatedString(stat.DisplayName) or stat.Name or "<Name>",
+                statName = stat.Name or "<StatName>",
+                description = Ext.Loca.GetTranslatedString(stat.Description) or "No description provided."
+            })
         end
+
+        createItemInfoTable(modDataGroup, items)
     end
 end
 
