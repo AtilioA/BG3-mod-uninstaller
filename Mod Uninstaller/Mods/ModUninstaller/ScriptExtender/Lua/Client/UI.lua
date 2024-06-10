@@ -6,12 +6,12 @@ UI.HasLoadedTemplates = false
 local function createItemInfoTable(tabHeader, items)
     local itemInfoTable = tabHeader:AddTable("ItemInfo", 2)
 
-    if MCMGet("add_vertical_scrollbar") then
+    if MCMGet("add_vertical_scrollbar") and #items > 50 then
         itemInfoTable.ScrollY = true
     else
         itemInfoTable.ScrollY = false
     end
-    
+
     itemInfoTable.Borders = true
     itemInfoTable.IDContext = "ItemInfoTable" .. tostring(tabHeader.IDContext)
 
