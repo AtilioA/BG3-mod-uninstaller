@@ -29,7 +29,7 @@
                             "Name": "Delete items",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "Delete items from the mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
+                            "Description": "Delete items from the selected mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
                             "Handles": {
                                 "DescriptionHandle": "h67d4b5dd071e4b429e1c7b324a69be88a9gc",
                                 "NameHandle": "hb5d55e252c9745afabccac4a9d429c70de55"
@@ -40,24 +40,11 @@
                             "Name": "Remove stats (statuses, spells, passives)",
                             "Type": "checkbox",
                             "Default": true,
-                            "Description": "Remove stats added by the mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
+                            "Description": "Remove stats added by the selected mod when uninstalling it.\nDon't disable this unless you know what you're doing.",
                             "Handles": {
                                 "DescriptionHandle": "h0700eec13ba440c3b8f35b3739fca0b08253",
                                 "NameHandle": "h25aff7b603e348ba8c9fdb967f1aa8f4gg25"
                             }
-                        },
-                        {
-                            "Id": "add_vertical_scrollbar",
-                            "Name": "Add vertical scrollbar",
-                            "Type": "checkbox",
-                            "Default": true,
-                            "Description": "Add a vertical scrollbar to tables of items, statuses, etc.",
-                            "Handles": {
-                                "DescriptionHandle": "hc0a4011265c74c449d409d1cf4ec3b62919d",
-                                "NameHandle": "hd851791e72b042b0b4b53788bbd894ac0afc",
-                                "TooltipHandle": "hc799742a27c645a4aff059dfa96eb834c8ag"
-                            },
-                            "Tooltip": "hd69d2c7e46f146c2b94d7a4086ff66acca72"
                         }
                     ]
                 }

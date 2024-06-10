@@ -156,8 +156,8 @@ local function renderTemplates(modDataGroup, selectedModUUID)
     templateText.IDContext = "TemplateText" .. selectedModUUID
 
     local templateCollapsing = modDataGroup:AddCollapsingHeader("Templates (weapons, armor, etc.)")
-    templateCollapsing.DefaultOpen = true
     templateCollapsing.IDContext = "TemplatesCollapsing" .. selectedModUUID
+    templateCollapsing.DefaultOpen = true
 
     for _, template in ipairs(templates) do
         createItemInfoTable(templateCollapsing,
