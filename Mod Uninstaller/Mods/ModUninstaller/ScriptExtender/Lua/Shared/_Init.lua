@@ -45,5 +45,3 @@ else
     local versionNumber = table.concat(MODVERSION, ".")
     MUPrint(0, "Mod Uninstaller version " .. versionNumber .. " loaded")
 end
-
-SubscribedEvents.SubscribeToEvents()
