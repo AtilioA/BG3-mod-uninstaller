@@ -20,7 +20,7 @@ function RemovePassivesForMod(modGuid)
     end
 
     -- TODO: get vanilla passives
-    -- Filter out vanilla passives
+    -- Filter out vanilla passives?
     local modPassives = {}
     for _, passive in ipairs(passives) do
         -- if VanillaPassives[passive] ~= true then
