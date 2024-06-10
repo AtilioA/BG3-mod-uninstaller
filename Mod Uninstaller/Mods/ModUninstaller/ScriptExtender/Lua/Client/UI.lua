@@ -112,7 +112,15 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
         button.Visible = false
         progressLabel.SameLine = false
-        updateProgressLabel(progressLabel, "Uninstalling mod " .. selectedMod .. "...", "#FFA500")
+
+        -- It's a bit gross, but Lua is even more
+        if ModsStats[selectedModUUID] and not table.isEmpty(ModsStats[selectedModUUID]) then
+            updateProgressLabel(progressLabel,
+                "Uninstalling mod " .. selectedMod .. "...\nThis might take a while.", "#FFA500")
+        else
+            updateProgressLabel(progressLabel,
+                "Uninstalling mod " .. selectedMod .. "...", "#FFA500")
+        end
 
         -- Request the server to take actions to help uninstalling the mod
         Ext.Net.PostMessageToServer("MU_Request_Server_Uninstall_Mod", Ext.Json.Stringify({
