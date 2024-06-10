@@ -6,4 +6,7 @@
     <content contentuid="h0700eec13ba440c3b8f35b3739fca0b08253" version="1">Remover status adicionados pelo mod ao desinstalá-lo.&lt;br&gt;Não desative a menos que você saiba o que está fazendo.</content>
     <content contentuid="hb5d55e252c9745afabccac4a9d429c70de55" version="1">Excluir itens</content>
     <content contentuid="h25aff7b603e348ba8c9fdb967f1aa8f4gg25" version="1">Remover stats (efeitos, feitiços, etc)</content>
+    <content contentuid="hc0a4011265c74c449d409d1cf4ec3b62919d" version="1">Uma barra de rolagem vertical será adicionada às tabelas de itens, status, etc.</content>
+    <content contentuid="hd851791e72b042b0b4b53788bbd894ac0afc" version="1">Adicionar barra de rolagem vertical</content>
+    <content contentuid="hc799742a27c645a4aff059dfa96eb834c8ag" version="1">Útil para mods que adicionam muitos itens, status, etc. Requer salvar/carregar um save ou um reset do SE.</content>
 </contentList>
