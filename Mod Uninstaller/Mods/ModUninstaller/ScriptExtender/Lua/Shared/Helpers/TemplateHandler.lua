@@ -63,6 +63,12 @@ local function formatTemplateData(templateData)
         description = Ext.Loca.GetTranslatedString(templateData.Description.Handle.Handle)
     end
 
+    local templateStats = Ext.Stats.Get(templateData.Stats)
+    local rarity = nil
+    if templateStats and templateStats.Rarity then
+        rarity = templateStats.Rarity
+    end
+
     return {
         Description = description,
         DisplayName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateData.Id),
@@ -70,6 +76,7 @@ local function formatTemplateData(templateData)
         Id = templateData.Id,
         Name = templateData.Name,
         Stats = templateData.Stats,
+        Rarity = rarity,
     }
 end
 

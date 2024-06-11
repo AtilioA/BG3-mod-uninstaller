@@ -3,7 +3,7 @@ UI.HasLoadedTemplates = false
 
 -- Function to create a table with item info
 -- Courtesy of Aahz
-local function createItemInfoTable(tabHeader, icon, name, statName, description, descriptionWidth)
+local function createItemInfoTable(tabHeader, icon, rarity, name, statName, description, descriptionWidth)
     local itemInfoTable = tabHeader:AddTable("ItemInfo", 2)
 
     itemInfoTable.Borders = true
@@ -26,6 +26,8 @@ local function createItemInfoTable(tabHeader, icon, name, statName, description,
     -- TODO: replace with some question mark icon if the game has one
     if icon and icon ~= "" then
         local itemIcon = iconCell:AddImage(icon)
+        local borderColor = UIHelpers:GetColorByRarity(rarity)
+        itemIcon.Border = borderColor
         -- TODO: set size?
         if itemIcon then
             itemIcon.IDContext = statName .. "_Icon"
@@ -170,6 +172,7 @@ local function renderTemplates(modDataGroup, selectedModUUID)
     for _, template in ipairs(templates) do
         createItemInfoTable(templateCollapsing,
             template.Icon or "",
+            template.Rarity,
             template.DisplayName or template.Name or "<Name>",
             template.Stats or "<StatName>",
             template.Description or "No description provided.")
@@ -206,6 +209,7 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
             local stat = Ext.Stats.Get(statEntry)
             createItemInfoTable(statCollapsing,
                 stat.Icon or "",
+                nil, -- rarity (not applicable for stats)
                 Ext.Loca.GetTranslatedString(stat.DisplayName) or stat.Name or "<Name>",
                 stat.Name or "<StatName>",
                 Ext.Loca.GetTranslatedString(stat.Description) or "No description provided.")

@@ -129,4 +129,18 @@ function UIHelpers:SortModUUIDTableByModName(modUUIDTable)
     end)
 end
 
+--- Get the vec4 color for a rarity string (Common, Uncommon, Rare, Epic, Legendary, Divine, Unique)
+-- Courtesy of Aahz
+function UIHelpers:GetColorByRarity(rarity)
+    local rarity_colors = {
+        ["Divine"]        = {0.92, 0.78, 0.03, 1.0},
+        ["Legendary"]     = {0.82, 0.00, 0.49, 1.0},
+        ["Epic"]          = {0.64, 0.27, 0.91, 1.0},
+        ["Rare"]          = {0.20, 0.80, 1.00, 1.0},
+        ["Uncommon"]      = {0.00, 0.66, 0.00, 1.0},
+        ["Unique"]        = {0.78, 0.65, 0.35, 1.0},
+        ["Common"]        = {1.0, 1.0, 1.0, 1.0}
+    }
+    return rarity_colors[rarity] or {1.0, 1.0, 1.0, 1.0}
+end
 return UIHelpers
