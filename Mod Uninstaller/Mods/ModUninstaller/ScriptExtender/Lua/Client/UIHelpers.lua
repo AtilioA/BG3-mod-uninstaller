@@ -139,8 +139,8 @@ function UIHelpers:GetColorByRarity(rarity)
         ["Rare"]          = {0.20, 0.80, 1.00, 1.0},
         ["Uncommon"]      = {0.00, 0.66, 0.00, 1.0},
         ["Unique"]        = {0.78, 0.65, 0.35, 1.0},
-        ["Common"]        = {1.0, 1.0, 1.0, 1.0}
+        ["Common"]        = {0.3, 0.3, 0.3, 1.0}
     }
-    return rarity_colors[rarity] or {1.0, 1.0, 1.0, 1.0}
+    return rarity_colors[rarity] or {0.3, 0.3, 0.3, 1.0}
 end
 return UIHelpers
