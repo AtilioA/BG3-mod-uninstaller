@@ -156,7 +156,10 @@ end
 
 local function renderTemplates(modDataGroup, selectedModUUID)
     local templates = ModsTemplates[selectedModUUID]
-    if #templates == 0 then
+    if not templates or table.isEmpty(templates) then
+        local templateText = modDataGroup:AddText(
+            "This mod does not have any items (templates) to remove.")
+        templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00FF00"))
         return
     end
 
@@ -193,6 +196,9 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
     MUDebug(1, "Stats for mod " .. selectedModUUID .. ":")
     MUDebug(1, stats)
     if not stats or table.isEmpty(stats) then
+        local statText = modDataGroup:AddText(
+            "This mod does not have any stats (statuses, spells, passives) to remove.")
+        statText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00FF00"))
         return
     end
 
