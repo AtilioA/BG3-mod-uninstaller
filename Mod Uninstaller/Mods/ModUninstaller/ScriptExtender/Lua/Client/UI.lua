@@ -31,7 +31,7 @@ local function createItemInfoTable(tabHeader, icon, rarity, name, statName, desc
             itemIcon = iconCell:AddImage("Item_Unknown")
             MUPrint("Setting to unknown in row: %s", icon)
         end
-        iconCell.Children[1]:Destroy()
+        -- iconCell.Children[1]:Destroy()
 
         local borderColor = UIHelpers:GetColorByRarity(rarity)
         itemIcon.Border = borderColor
