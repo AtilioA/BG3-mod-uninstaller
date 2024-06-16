@@ -26,6 +26,13 @@ local function createItemInfoTable(tabHeader, icon, rarity, name, statName, desc
     -- TODO: replace with some question mark icon if the game has one
     if icon and icon ~= "" then
         local itemIcon = iconCell:AddImage(icon)
+        if not itemIcon.ImageData or itemIcon.ImageData.Icon == "" then
+            itemIcon:Destroy()
+            itemIcon = iconCell:AddImage("Item_Unknown")
+            MUPrint("Setting to unknown in row: %s", icon)
+        end
+        iconCell.Children[1]:Destroy()
+
         local borderColor = UIHelpers:GetColorByRarity(rarity)
         itemIcon.Border = borderColor
         -- TODO: set size?
