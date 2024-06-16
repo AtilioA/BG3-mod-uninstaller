@@ -231,7 +231,7 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
                 Ext.Loca.GetTranslatedString(stat.Description) or "No description provided.")
         end
     end
-    
+
     return true
 end
 
@@ -283,46 +283,66 @@ local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOption
 end
 
 local function loadTemplates(tabHeader)
-    if not UI.HasLoadedTemplates then
-        VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
-        ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
-        -- Needed cause some load orders might be too big to send via net messages
-        Ext.Net.PostMessageToServer("MU_Server_Should_Load_Templates", "")
-
-        UI.HasLoadedTemplates = true
-
-        local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
-        if #modsToUninstallOptions == 0 then
-            local noModsToUninstallMsg =
-                "No mods available to uninstall.\nIf you believe this is an error, please provide your SE console log to " ..
-                Ext.Mod.GetMod(ModuleUUID).Info.Author .. "."
-            local noModsLabel = parseGroup:AddText(
-                noModsToUninstallMsg)
-            noModsLabel.IDContext = "NoModsLabel"
-            MUWarn(0,
-                noModsToUninstallMsg)
-            UI.HasTemplates = false
+    local function handleException(err)
+        if tabHeader then
+            local errorText = tabHeader:AddText("Error occurred in loadTemplates function:\n" .. err)
+            errorText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
         else
-            UI.HasTemplates = true
-            local modsToUninstallOptionsDump = Ext.DumpExport(modsToUninstallOptions)
-            MUDebug(1, modsToUninstallOptionsDump)
-            UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
-
-            local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
-            local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
-
-            local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
-            local modDataGroup = createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
-            if parseGroup then
-                parseGroup:Destroy()
-            end
+            MUWarn(0, "Error occurred in loadTemplates function: " .. err)
         end
-    elseif UI.HasTemplates then
-        local alreadyLoadedLabel = parseGroup:AddText(
-            "Templates have already been loaded. You may select a mod to uninstall.")
-        alreadyLoadedLabel.IDContext = "AlreadyLoadedLabel"
-        MUSuccess(0, "Templates have already been loaded. You may select a mod to uninstall.")
     end
+
+    xpcall(function()
+        if not UI.HasLoadedTemplates then
+            local function getTemplatesAndStats()
+                VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
+                ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
+                -- Needed cause some load orders might be too big to send via net messages
+                Ext.Net.PostMessageToServer("MU_Server_Should_Load_Templates", "")
+            end
+
+            xpcall(getTemplatesAndStats, handleException)
+
+            UI.HasLoadedTemplates = true
+
+            local function populateModsToUninstallOptions()
+                local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
+                if #modsToUninstallOptions == 0 then
+                    local noModsToUninstallMsg =
+                        "No mods available to uninstall.\nIf you believe this is an error, please provide your SE console log to " ..
+                        Ext.Mod.GetMod(ModuleUUID).Info.Author .. "."
+                    local noModsLabel = parseGroup:AddText(
+                        noModsToUninstallMsg)
+                    noModsLabel.IDContext = "NoModsLabel"
+                    MUWarn(0,
+                        noModsToUninstallMsg)
+                    UI.HasTemplates = false
+                else
+                    UI.HasTemplates = true
+                    local modsToUninstallOptionsDump = Ext.DumpExport(modsToUninstallOptions)
+                    MUDebug(1, modsToUninstallOptionsDump)
+                    UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
+
+                    local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
+                    local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
+
+                    local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
+                    local modDataGroup = createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+                    if parseGroup then
+                        parseGroup:Destroy()
+                    end
+                end
+                return modsToUninstallOptions
+            end
+
+            xpcall(populateModsToUninstallOptions, handleException)
+        elseif UI.HasTemplates then
+            local alreadyLoadedLabel = parseGroup:AddText(
+                "Templates have already been loaded. You may select a mod to uninstall.")
+            alreadyLoadedLabel.IDContext = "AlreadyLoadedLabel"
+            MUSuccess(0, "Templates have already been loaded. You may select a mod to uninstall.")
+        end
+    end, handleException)
 end
 
 local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
