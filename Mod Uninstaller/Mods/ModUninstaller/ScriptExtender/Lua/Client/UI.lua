@@ -49,13 +49,13 @@ local function createItemInfoTable(tabHeader, icon, rarity, name, statName, desc
 end
 
 local function createModsToUninstallSeparator(tabHeader)
-    local separator = tabHeader:AddSeparatorText("Mods to uninstall")
+    local separator = tabHeader:AddSeparatorText(Ext.Loca.GetTranslatedString("h5f216c4172094376a5eec94db07ee93ea56d"))
     separator.IDContext = "ModsToUninstall"
     return separator
 end
 
 local function createModsToUninstallLabel(tabHeader)
-    local label = tabHeader:AddText("Select the mod to uninstall:")
+    local label = tabHeader:AddText(Ext.Loca.GetTranslatedString("hc6dae92ec2604cd097e5e6e26ac9ddb8921d"))
     label.IDContext = "ModsToUninstallLabel"
     label.SameLine = false
     return label
@@ -63,7 +63,7 @@ end
 
 local function createModsComboBox(tabHeader, modsToUninstallOptions)
     -- Insert placeholder at the beginning of the options
-    table.insert(modsToUninstallOptions, 1, "Click to see the available mods")
+    table.insert(modsToUninstallOptions, 1, Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213"))
 
     local comboBox = tabHeader:AddCombo("")
     comboBox.IDContext = "ModsToUninstallComboBox"
@@ -103,7 +103,8 @@ local function handleUninstallResponse(progressLabel, payload)
 end
 
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-    local button = tabHeader:AddButton("Uninstall", "Uninstall")
+    local button = tabHeader:AddButton(Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6"),
+        Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6"))
     button:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FFFFFF"))
     button:SetColor("Button", VCHelpers.Color:hex_to_rgba("#FF2525"))
     button.IDContext = "UninstallButton"
@@ -338,7 +339,7 @@ local function loadTemplates(tabHeader)
             xpcall(populateModsToUninstallOptions, handleException)
         elseif UI.HasTemplates then
             local alreadyLoadedLabel = parseGroup:AddText(
-                "Templates have already been loaded. You may select a mod to uninstall.")
+                Ext.Loca.GetTranslatedString("h60a7d03ee73b4af1845608fec9147d15610e"))
             alreadyLoadedLabel.IDContext = "AlreadyLoadedLabel"
             MUSuccess(0, "Templates have already been loaded. You may select a mod to uninstall.")
         end
@@ -346,14 +347,16 @@ local function loadTemplates(tabHeader)
 end
 
 local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
-    parseGroup = tabHeader:AddGroup("Parse mod data")
+    parseGroup = tabHeader:AddGroup(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseGroup.IDContext = "LoadModDataGroup"
-    local buttonSeparator = parseGroup:AddSeparatorText("REQUIRED: Load data from mods")
+    local buttonSeparator = parseGroup:AddSeparatorText(Ext.Loca.GetTranslatedString(
+        "h72312e32006341e69d760806936bbfff5121"))
     buttonSeparator.IDContext = "LoadTemplatesSeparator"
     local buttonLabel = parseGroup:AddText(
-        "For performance reasons, mod data is only parsed after clicking this button:")
+        Ext.Loca.GetTranslatedString("h58685c08a5d4413b916ac83e1cd96c2719c4")
+    )
     buttonLabel.IDContext = "LoadTemplatesLabel"
-    local parseButton = parseGroup:AddButton("Parse mod data")
+    local parseButton = parseGroup:AddButton(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseButton.IDContext = "LoadTemplatesButton"
 
     parseButton.OnClick = function()

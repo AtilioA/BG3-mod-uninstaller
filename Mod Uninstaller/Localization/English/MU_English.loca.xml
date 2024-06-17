@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+    <content contentuid="h1097dfc154a744988edb67de00c1aa2f9df8" version="1">Debug Level</content>
+    <content contentuid="h41207aa60b2141b0a17e70393fffb4a7d889" version="1">0 = no debug, 1 = minimal, 2 = detailed debug logs.&lt;br&gt;For this mod, 1 or 2 is recommended.</content>
+    <content contentuid="h67d4b5dd071e4b429e1c7b324a69be88a9gc" version="1">Delete mod items when uninstalling it.&lt;br&gt;Do not disable unless you know what you're doing.</content>
+    <content contentuid="h0700eec13ba440c3b8f35b3739fca0b08253" version="1">Remove stats added by a mod when uninstalling it.&lt;br&gt;Do not disable unless you know what you're doing.</content>
+    <content contentuid="hb5d55e252c9745afabccac4a9d429c70de55" version="1">Delete items (templates)</content>
+    <content contentuid="h25aff7b603e348ba8c9fdb967f1aa8f4gg25" version="1">Remove stats (Statuses, Spells, Passives, etc.)</content>
+    <content contentuid="h6b07161260644c2c8c9bfaf04507a6731d3d" version="1">Features</content>
+    <content contentuid="h58685c08a5d4413b916ac83e1cd96c2719c4" version="1">For performance reasons, mod data is only analyzed after clicking this button:</content>
+    <content contentuid="h72312e32006341e69d760806936bbfff5121" version="1">REQUIRED: Analyze mods data</content>
+    <content contentuid="h60a7d03ee73b4af1845608fec9147d15610e" version="1">Mods have already been analyzed. You can now select a mod to uninstall.</content>
+    <content contentuid="h5872505ffa094434bf65b4b17b94e8bcg1d1" version="1">Analyze mod data</content>
+    <content contentuid="h5f216c4172094376a5eec94db07ee93ea56d" version="1">Mods to uninstall</content>
+    <content contentuid="hc6dae92ec2604cd097e5e6e26ac9ddb8921d" version="1">Select the mod to uninstall:</content>
+    <content contentuid="hd1c4fca19088449c9f3b63396070802e7213" version="1">Click to see available mods</content>
+    <content contentuid="ha2482b4c47ce4044bf3acd25a08a1401fbd6" version="1">Uninstall</content>
+</contentList>
