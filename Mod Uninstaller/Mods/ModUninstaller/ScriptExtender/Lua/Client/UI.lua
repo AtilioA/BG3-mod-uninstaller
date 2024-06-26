@@ -261,13 +261,22 @@ end
 
 local localTabHeader, parseGroup
 
-local function handleComboBoxChange(value, modDataGroup, modsToUninstallOptions, uninstallButton)
+local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUninstallOptions, uninstallButton)
+    local function removePlaceholder(options, comboBox)
+        if options[1] == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
+            table.remove(options, 1)
+            comboBox.Options = options
+        end
+    end
+
     -- Check if the selected option is the placeholder and do nothing if it is
     if value.SelectedIndex == 0 then
         if uninstallButton then
             uninstallButton.Visible = false
         end
         return
+    else
+        removePlaceholder(modsToUninstallOptions, modsComboBox)
     end
 
     local selectedMod = modsToUninstallOptions[value.SelectedIndex + 1]
@@ -300,7 +309,7 @@ local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOption
     modsComboBox.OnChange = function(value)
         -- First, destroy all the children of the modDataGroup before rendering new ones
         clearModDataGroup(modDataGroup)
-        handleComboBoxChange(value, modDataGroup, modsToUninstallOptions, uninstallButton)
+        handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUninstallOptions, uninstallButton)
     end
 
     return modDataGroup
