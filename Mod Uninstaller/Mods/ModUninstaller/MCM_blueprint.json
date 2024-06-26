@@ -6,8 +6,8 @@
             "TabId": "features",
             "Sections": [
                 {
-                    "SectionId": "Features",
-                    "SectionName": "Features",
+                    "SectionId": "advanced_uninstall_options",
+                    "SectionName": "Advanced uninstall options",
                     "Settings": [
                         {
                             "Id": "debug_level",
@@ -48,10 +48,16 @@
                         }
                     ],
                     "Handles": {
-                        "NameHandle": "h6b07161260644c2c8c9bfaf04507a6731d3d"
+                        "NameHandle": "hfc5d60b472a142f1ba16a7cda22d63d155f8"
+                    },
+                    "Options": {
+                        "IsCollapsible": true
                     }
                 }
-            ]
+            ],
+            "Handles": {
+                "NameHandle": "h6b07161260644c2c8c9bfaf04507a6731d3d"
+            }
         }
     ]
 }
