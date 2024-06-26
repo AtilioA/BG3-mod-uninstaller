@@ -103,19 +103,42 @@ local function handleUninstallResponse(progressLabel, payload)
 end
 
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
-    local button = tabHeader:AddButton(Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6"),
-        Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6"))
+    local button = tabHeader:AddButton("", "") -- Initialize with empty strings
     button:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FFFFFF"))
-    button:SetColor("Button", VCHelpers.Color:hex_to_rgba("#FF2525"))
+    button:SetColor("Button", VCHelpers.Color:hex_to_rgba("#B21919"))
     button.IDContext = "UninstallButton"
 
     local progressLabel = tabHeader:AddText("")
     progressLabel.IDContext = "UninstallProgressLabel"
     progressLabel.SameLine = false
 
+    local function updateButtonLabel()
+        local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
+        local uninstallText = Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6")
+        if selectedMod == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
+            button.Label = uninstallText
+        else
+            local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
+            if selectedModUUID then
+                local mod = Ext.Mod.GetMod(selectedModUUID)
+                if mod and mod.Info and mod.Info.Name then
+                    button.Label = string.format("%s '%s'", uninstallText, mod.Info.Name)
+                else
+                    button.Label = uninstallText
+                end
+            else
+                button.Label = uninstallText
+            end
+        end
+    end
+
+    -- Initial update (to set the button label to the placeholder text)
+    updateButtonLabel()
+
+
     button.OnClick = function()
         local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
-        if selectedMod == "Click to see the available mods" then
+        if selectedMod == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
             return
         end
 
@@ -371,7 +394,6 @@ end)
 
 Ext.RegisterNetListener("MCM_Mod_Tab_Activated", function(channel, payload)
     local data = Ext.Json.Parse(payload)
-    _D(data)
     if data.modGUID == ModuleUUID and not UI.HasLoadedTemplates then
         loadTemplates(localTabHeader)
     end
