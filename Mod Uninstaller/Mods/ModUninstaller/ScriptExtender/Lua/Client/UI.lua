@@ -178,14 +178,14 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     Ext.RegisterNetListener("MU_Uninstalled_Mod", function(channel, payload)
         xpcall(function()
             if button then
-                button.Visible = true
+                button.Visible = false
+            end
+            if progressLabel then
+                progressLabel.SameLine = false
             end
         end, function(err)
             -- except pass lmao (this is a hack cause IMGUI is dumb, the button actually exists)
         end)
-        if progressLabel then
-            progressLabel.SameLine = true
-        end
         handleUninstallResponse(progressLabel, payload)
     end)
 
@@ -315,6 +315,9 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
     else
         uninstallButton.Visible = true
     end
+
+    local resultsSeparator = modDataGroup:AddSeparator()
+    resultsSeparator:SetColor("Separator", VCHelpers.Color:hex_to_rgba("#808080"))
 
     local renderedTemplates = renderTemplates(modDataGroup, selectedModUUID)
     local renderedStats = renderStatEntries(modDataGroup, selectedModUUID)
