@@ -5,9 +5,14 @@ function MoveAllItemsFromContainer(containerUUID)
 
     for _, item in pairs(items) do
         if item.Guid then
-            local exact, total = Osi.GetStackAmount(item.Guid)
-            Osi.ToInventory(item.Guid, campChest, total)
-            MUPrint(0, "Moved item: " .. item.Guid .. " (" .. item.Name .. ") to camp chest.")
+            if Osi.IsContainer(item.Guid) == 1 then
+                -- Recursively move items from nested containers
+                MoveAllItemsFromContainer(item.Guid)
+            else
+                local exact, total = Osi.GetStackAmount(item.Guid)
+                Osi.ToInventory(item.Guid, campChest, total)
+                MUPrint(0, "Moved item: " .. item.Guid .. " (" .. item.Name .. ") to camp chest.")
+            end
         end
     end
 end
@@ -50,6 +55,7 @@ function DeleteAllMatchingTemplates(entities, templateID)
         end
     end)
 end
+
 --- Delete a table of templates by ID
 ---@param uuid string The mod UUID
 function DeleteTemplatesForMod(uuid)
