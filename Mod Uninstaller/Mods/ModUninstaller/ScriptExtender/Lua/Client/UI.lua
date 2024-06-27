@@ -87,10 +87,14 @@ end
 ---@param message string The message to display
 ---@param color string The color of the text in hex format
 local function updateProgressLabel(progressLabel, message, color)
+    xpcall(function()
     if progressLabel then
         progressLabel.Label = message
         progressLabel:SetColor("Text", VCHelpers.Color:hex_to_rgba(color))
     end
+    end, function(err)
+        -- except pass lmao (this is a hack cause IMGUI is dumb, the label actually exists)
+    end)
 end
 
 ---Handle the response from the server after attempting to uninstall a mod
@@ -145,7 +149,6 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     -- Initial update (to set the button label to the placeholder text)
     updateButtonLabel()
 
-
     button.OnClick = function()
         local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
         if selectedMod == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
@@ -172,14 +175,26 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     end
 
     Ext.RegisterNetListener("MU_Uninstalled_Mod", function(channel, payload)
+        xpcall(function()
+            if button then
         button.Visible = true
+            end
+        end, function(err)
+            -- except pass lmao (this is a hack cause IMGUI is dumb, the button actually exists)
+        end)
+        if progressLabel then
         progressLabel.SameLine = true
+        end
         handleUninstallResponse(progressLabel, payload)
     end)
 
     Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
+        if button then
         button.Visible = true
+        end
+        if progressLabel then
         progressLabel.SameLine = true
+        end
         handleUninstallResponse(progressLabel, payload)
     end)
 
