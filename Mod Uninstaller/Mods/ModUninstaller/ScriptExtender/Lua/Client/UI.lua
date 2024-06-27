@@ -61,11 +61,21 @@ local function createModsToUninstallLabel(tabHeader)
     return label
 end
 
+local function createModsToUninstallDisclaimer(IMGUIElement)
+    local comboTooltip = IMGUIElement:Tooltip()
+    local modListDisclaimer = comboTooltip:AddText(UIHelpers:ReplaceBrWithNewlines(Ext.Loca.GetTranslatedString(
+        "hb94283896cc041b1a1cdaa0dba833fd5a026")))
+    modListDisclaimer.IDContext = "ModsToUninstallDisclaimer"
+    modListDisclaimer.SameLine = false
+end
+
 local function createModsComboBox(tabHeader, modsToUninstallOptions)
     -- Insert placeholder at the beginning of the options
     table.insert(modsToUninstallOptions, 1, Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213"))
 
     local comboBox = tabHeader:AddCombo("")
+    createModsToUninstallDisclaimer(comboBox)
+
     comboBox.IDContext = "ModsToUninstallComboBox"
     comboBox.Options = modsToUninstallOptions
     comboBox.SelectedIndex = 0

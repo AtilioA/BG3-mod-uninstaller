@@ -143,4 +143,10 @@ function UIHelpers:GetColorByRarity(rarity)
     }
     return rarity_colors[rarity] or {0.3, 0.3, 0.3, 1.0}
 end
+
+-- TODO: deprecate this with a VC function (I don't want to update VC just for this)
+function UIHelpers:ReplaceBrWithNewlines(str)
+    return string.gsub(str, "<br>", "\n")
+end
+
 return UIHelpers
