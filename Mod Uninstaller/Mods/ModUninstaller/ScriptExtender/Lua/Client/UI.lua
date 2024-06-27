@@ -1,6 +1,8 @@
 UI = {}
 UI.HasLoadedTemplates = false
 
+local loadingText
+
 -- Function to create a table with item info
 -- Courtesy of Aahz
 local function createItemInfoTable(tabHeader, icon, rarity, name, statName, description, descriptionWidth)
@@ -225,7 +227,8 @@ local function renderTemplates(modDataGroup, selectedModUUID)
     templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
     templateText.IDContext = "TemplateText" .. selectedModUUID
 
-    local templateCollapsing = modDataGroup:AddCollapsingHeader(Ext.Loca.GetTranslatedString("h311204758fa4422395e190b764354040g23b"))
+    local templateCollapsing = modDataGroup:AddCollapsingHeader(Ext.Loca.GetTranslatedString(
+        "h311204758fa4422395e190b764354040g23b"))
     templateCollapsing.IDContext = "TemplatesCollapsing" .. selectedModUUID
     templateCollapsing.DefaultOpen = true
 
@@ -357,15 +360,6 @@ local function loadTemplates(tabHeader)
 
     xpcall(function()
         if not UI.HasLoadedTemplates then
-            -- -- Show loading message
-            -- if parseGroup then
-            --     parseGroup:Destroy()
-            -- end
-            -- parseGroup = tabHeader:AddGroup("Loading")
-            -- parseGroup.IDContext = "LoadingGroup"
-            -- local loadingText = parseGroup:AddText("Please hang on, analyzing mod data...")
-            -- loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
-
             local function getTemplatesAndStats()
                 VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
                 ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
@@ -376,6 +370,7 @@ local function loadTemplates(tabHeader)
             xpcall(getTemplatesAndStats, handleException)
 
             UI.HasLoadedTemplates = true
+            loadingText.Visible = false
 
             local function populateModsToUninstallOptions()
                 local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
@@ -417,7 +412,7 @@ local function loadTemplates(tabHeader)
     end, handleException)
 end
 
-local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
+local function createLoadTemplatesButton(tabHeader)
     parseGroup = tabHeader:AddGroup(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseGroup.IDContext = "LoadModDataGroup"
     local buttonSeparator = parseGroup:AddSeparatorText(Ext.Loca.GetTranslatedString(
@@ -430,6 +425,9 @@ local function createLoadTemplatesButton(tabHeader, modsToUninstallOptions)
     local parseButton = parseGroup:AddButton(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseButton.IDContext = "LoadTemplatesButton"
 
+    loadingText = parseGroup:AddText(Ext.Loca.GetTranslatedString("h444ecd5201e246eab95edf6541363fd338e5"))
+    loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
+
     parseButton.OnClick = function()
         loadTemplates(tabHeader)
     end
@@ -437,7 +435,7 @@ end
 
 Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader)
     localTabHeader = tabHeader
-    createLoadTemplatesButton(localTabHeader, nil)
+    createLoadTemplatesButton(localTabHeader)
 end)
 
 Ext.RegisterNetListener("MCM_Mod_Tab_Activated", function(channel, payload)

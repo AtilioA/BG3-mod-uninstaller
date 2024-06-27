@@ -27,4 +27,5 @@
     <content contentuid="ha39ba2327d8f44f08efbfb6b762009990f80" version="1">These stats will be removed from all entities if you click the 'Uninstall' button:</content>
     <content contentuid="h5141a574bfeb4a058691f0e1f86ccb43ebff" version="1">This mod does not have any stats (statuses, spells, passives) to remove.</content>
     <content contentuid="h657bb402f5f1479abcac2c774eba5bf15633" version="1">This mod does not have any items or stats to remove.&lt;br&gt;Expected something here? Please open a bug report on MU's mod page.</content>
+    <content contentuid="h444ecd5201e246eab95edf6541363fd338e5" version="1">Please hang on, analyzing mod data...</content>
 </contentList>
