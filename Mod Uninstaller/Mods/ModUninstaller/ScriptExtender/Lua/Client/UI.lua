@@ -88,10 +88,10 @@ end
 ---@param color string The color of the text in hex format
 local function updateProgressLabel(progressLabel, message, color)
     xpcall(function()
-    if progressLabel then
-        progressLabel.Label = message
-        progressLabel:SetColor("Text", VCHelpers.Color:hex_to_rgba(color))
-    end
+        if progressLabel then
+            progressLabel.Label = message
+            progressLabel:SetColor("Text", VCHelpers.Color:hex_to_rgba(color))
+        end
     end, function(err)
         -- except pass lmao (this is a hack cause IMGUI is dumb, the label actually exists)
     end)
@@ -109,6 +109,7 @@ local function handleUninstallResponse(progressLabel, payload)
 
     local modName = mod.Info.Name
 
+    -- TODO: allow localization (will need string interpolation for the mod name, etc)
     if data.error then
         updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
     else
@@ -177,23 +178,23 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     Ext.RegisterNetListener("MU_Uninstalled_Mod", function(channel, payload)
         xpcall(function()
             if button then
-        button.Visible = true
+                button.Visible = true
             end
         end, function(err)
             -- except pass lmao (this is a hack cause IMGUI is dumb, the button actually exists)
         end)
         if progressLabel then
-        progressLabel.SameLine = true
+            progressLabel.SameLine = true
         end
         handleUninstallResponse(progressLabel, payload)
     end)
 
     Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
         if button then
-        button.Visible = true
+            button.Visible = true
         end
         if progressLabel then
-        progressLabel.SameLine = true
+            progressLabel.SameLine = true
         end
         handleUninstallResponse(progressLabel, payload)
     end)
@@ -214,17 +215,17 @@ local function renderTemplates(modDataGroup, selectedModUUID)
     local templates = ModsTemplates[selectedModUUID]
     if not templates or table.isEmpty(templates) then
         local templateText = modDataGroup:AddText(
-            "This mod does not have any items (templates) to remove.")
+            Ext.Loca.GetTranslatedString("hb0be1d2d0151411c9707bce520dd319fc0g1"))
         templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00FF00"))
         return false
     end
 
     local templateText = modDataGroup:AddText(
-        "These items will be deleted from your save if you click the 'Uninstall' button:")
+        Ext.Loca.GetTranslatedString("ha7a78a2aa8244ae882559699c1e9e2febffd"))
     templateText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#FF2525"))
     templateText.IDContext = "TemplateText" .. selectedModUUID
 
-    local templateCollapsing = modDataGroup:AddCollapsingHeader("Templates (weapons, armor, etc.)")
+    local templateCollapsing = modDataGroup:AddCollapsingHeader(Ext.Loca.GetTranslatedString("h311204758fa4422395e190b764354040g23b"))
     templateCollapsing.IDContext = "TemplatesCollapsing" .. selectedModUUID
     templateCollapsing.DefaultOpen = true
 
@@ -234,7 +235,7 @@ local function renderTemplates(modDataGroup, selectedModUUID)
             template.Rarity,
             template.DisplayName or template.Name or "<Name>",
             template.Stats or "<StatName>",
-            template.Description or "No description provided.")
+            template.Description or Ext.Loca.GetTranslatedString("h11d60dd3992446e8ba94662af4dbef3a0036"))
     end
 
     return true
@@ -242,11 +243,11 @@ end
 
 local function getStatTypeText(entryType)
     local texts = {
-        StatusData = "These statuses will be removed from all entities in your save if you click the 'Uninstall' button:",
-        SpellData = "These spells will be removed from all entities if you click the 'Uninstall' button:",
-        PassiveData = "These passives will be removed from all entities if you click the 'Uninstall' button:"
+        StatusData = Ext.Loca.GetTranslatedString("h75a77c7fd500445b8ed105b43a2eafe58e98"),
+        SpellData = Ext.Loca.GetTranslatedString("ha7af21bff6354ed6a9370c35804785afff6a"),
+        PassiveData = Ext.Loca.GetTranslatedString("hdc09f83707854627afe4f861f4a6a95c2g38")
     }
-    return texts[entryType] or "These stats will be removed from all entities if you click the 'Uninstall' button:"
+    return texts[entryType] or Ext.Loca.GetTranslatedString("ha39ba2327d8f44f08efbfb6b762009990f80")
 end
 
 local function renderStatEntries(modDataGroup, selectedModUUID)
@@ -256,7 +257,7 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
     modDataGroup:AddDummy(0, 5)
     if not stats or table.isEmpty(stats) then
         local statText = modDataGroup:AddText(
-            "This mod does not have any stats (statuses, spells, passives) to remove.")
+            Ext.Loca.GetTranslatedString("h5141a574bfeb4a058691f0e1f86ccb43ebff"))
         statText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00FF00"))
         return false
     end
@@ -277,7 +278,8 @@ local function renderStatEntries(modDataGroup, selectedModUUID)
                 nil, -- rarity (not applicable for stats)
                 Ext.Loca.GetTranslatedString(stat.DisplayName) or stat.Name or "<Name>",
                 stat.Name or "<StatName>",
-                Ext.Loca.GetTranslatedString(stat.Description) or "No description provided.")
+                Ext.Loca.GetTranslatedString(stat.Description) or
+                Ext.Loca.GetTranslatedString("h11d60dd3992446e8ba94662af4dbef3a0036"))
         end
     end
 
@@ -319,7 +321,7 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
 
     if not renderedTemplates and not renderedStats then
         local noEntriesText = modDataGroup:AddText(
-            "This mod does not have any items or stats to remove.")
+            UIHelpers:ReplaceBrWithNewlines(Ext.Loca.GetTranslatedString("h657bb402f5f1479abcac2c774eba5bf15633")))
         uninstallButton.Visible = false
     end
 end
@@ -352,6 +354,15 @@ local function loadTemplates(tabHeader)
 
     xpcall(function()
         if not UI.HasLoadedTemplates then
+            -- -- Show loading message
+            -- if parseGroup then
+            --     parseGroup:Destroy()
+            -- end
+            -- parseGroup = tabHeader:AddGroup("Loading")
+            -- parseGroup.IDContext = "LoadingGroup"
+            -- local loadingText = parseGroup:AddText("Please hang on, analyzing mod data...")
+            -- loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
+
             local function getTemplatesAndStats()
                 VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
                 ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })

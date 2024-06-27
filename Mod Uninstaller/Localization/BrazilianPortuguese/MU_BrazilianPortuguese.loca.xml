@@ -14,7 +14,17 @@
     <content contentuid="h5872505ffa094434bf65b4b17b94e8bcg1d1" version="1">Analisar dados de mods</content>
     <content contentuid="h5f216c4172094376a5eec94db07ee93ea56d" version="1">Mods a serem desinstalados</content>
     <content contentuid="hc6dae92ec2604cd097e5e6e26ac9ddb8921d" version="1">Escolha o mod a ser desinstalado:</content>
-    <content contentuid="hd1c4fca19088449c9f3b63396070802e7213" version="1">Clique para ver os mods disponíveis</content>
+    <content contentuid="hd1c4fca19088449c9f3b63396070802e7213" version="1">Clique aqui para ver os mods disponíveis</content>
     <content contentuid="ha2482b4c47ce4044bf3acd25a08a1401fbd6" version="1">Desinstalar</content>
     <content contentuid="hb94283896cc041b1a1cdaa0dba833fd5a026" version="1">Note: nem todos os mods serão listados, pois muitos não deixam rastros no seu save e não precisam ser removidos.&lt;br&gt;Veja a descrição do Mod Uninstaller no Nexus para mais detalhes.</content>
+    <content contentuid="hb0be1d2d0151411c9707bce520dd319fc0g1" version="1">Este mod não tem nenhum item (templates) para remover.</content>
+    <content contentuid="ha7a78a2aa8244ae882559699c1e9e2febffd" version="1">Estes itens serão excluídos do seu save se você clicar no botão 'Desinstalar':</content>
+    <content contentuid="h311204758fa4422395e190b764354040g23b" version="1">Templates (armas, armaduras, etc.)</content>
+    <content contentuid="h11d60dd3992446e8ba94662af4dbef3a0036" version="1">Nenhuma descrição fornecida.</content>
+    <content contentuid="h75a77c7fd500445b8ed105b43a2eafe58e98" version="1">Estes status serão removidos de todas as entidades no seu save se você clicar no botão 'Desinstalar':</content>
+    <content contentuid="ha7af21bff6354ed6a9370c35804785afff6a" version="1">Estes feitiços serão removidos de todas as entidades se você clicar no botão 'Desinstalar':</content>
+    <content contentuid="hdc09f83707854627afe4f861f4a6a95c2g38" version="1">Estas passivas serão removidas de todas as entidades se você clicar no botão 'Desinstalar':</content>
+    <content contentuid="ha39ba2327d8f44f08efbfb6b762009990f80" version="1">Estes 'stats' serão removidos de todas as entidades se você clicar no botão 'Desinstalar':</content>
+    <content contentuid="h5141a574bfeb4a058691f0e1f86ccb43ebff" version="1">Este mod não tem nenhum 'stat' (status, feitiços, passivas) para remover.</content>
+    <content contentuid="h657bb402f5f1479abcac2c774eba5bf15633" version="1">Este mod não tem nenhum item ou 'stat' para remover.&lt;br&gt;Esperava algo aqui? Por favor, abra um relatório de bug na página do Mod Uninstaller.</content>
 </contentList>

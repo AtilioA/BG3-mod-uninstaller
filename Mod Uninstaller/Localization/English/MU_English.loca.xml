@@ -17,4 +17,14 @@
     <content contentuid="hd1c4fca19088449c9f3b63396070802e7213" version="1">Click to view available mods</content>
     <content contentuid="ha2482b4c47ce4044bf3acd25a08a1401fbd6" version="1">Uninstall</content>
     <content contentuid="hb94283896cc041b1a1cdaa0dba833fd5a026" version="1">Note: not all mods will be listed, as many don't leave traces in your save file and don't need scrubbing.&lt;br&gt;See Mod Uninstaller's Nexus description for details.</content>
+    <content contentuid="hb0be1d2d0151411c9707bce520dd319fc0g1" version="1">This mod does not have any items (templates) to remove.</content>
+    <content contentuid="ha7a78a2aa8244ae882559699c1e9e2febffd" version="1">These items will be deleted from your save if you click the 'Uninstall' button:</content>
+    <content contentuid="h311204758fa4422395e190b764354040g23b" version="1">Templates (weapons, armor, etc.)</content>
+    <content contentuid="h11d60dd3992446e8ba94662af4dbef3a0036" version="1">No description provided.</content>
+    <content contentuid="h75a77c7fd500445b8ed105b43a2eafe58e98" version="1">These statuses will be removed from all entities in your save if you click the 'Uninstall' button:</content>
+    <content contentuid="ha7af21bff6354ed6a9370c35804785afff6a" version="1">These spells will be removed from all entities if you click the 'Uninstall' button:</content>
+    <content contentuid="hdc09f83707854627afe4f861f4a6a95c2g38" version="1">These passives will be removed from all entities if you click the 'Uninstall' button:</content>
+    <content contentuid="ha39ba2327d8f44f08efbfb6b762009990f80" version="1">These stats will be removed from all entities if you click the 'Uninstall' button:</content>
+    <content contentuid="h5141a574bfeb4a058691f0e1f86ccb43ebff" version="1">This mod does not have any stats (statuses, spells, passives) to remove.</content>
+    <content contentuid="h657bb402f5f1479abcac2c774eba5bf15633" version="1">This mod does not have any items or stats to remove.&lt;br&gt;Expected something here? Please open a bug report on MU's mod page.</content>
 </contentList>
