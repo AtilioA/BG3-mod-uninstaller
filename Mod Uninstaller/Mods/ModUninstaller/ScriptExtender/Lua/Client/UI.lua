@@ -296,17 +296,20 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
         if options[1] == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
             table.remove(options, 1)
             comboBox.Options = options
+            return true
         end
     end
 
     -- Check if the selected option is the placeholder and do nothing if it is
-    if value.SelectedIndex == 0 then
+    if value.SelectedIndex == 0 and modsToUninstallOptions[1] == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
         if uninstallButton then
             uninstallButton.Visible = false
         end
         return
     else
-        removePlaceholder(modsToUninstallOptions, modsComboBox)
+        if removePlaceholder(modsToUninstallOptions, modsComboBox) then
+            value.SelectedIndex = value.SelectedIndex - 1
+        end
     end
 
     local selectedMod = modsToUninstallOptions[value.SelectedIndex + 1]
