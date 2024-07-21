@@ -59,7 +59,7 @@ Ext.RegisterConsoleCommand("MU_Uninstall_Mod", function(cmd, modId)
 
     local mod = Ext.Mod.GetMod(modId)
     if not mod then
-        MUWarn(0, "Mod not found for mod ID: " .. modId)
+        MUWarn(0, "Mod not found for UUID: " .. modId .. ". Are you sure you have informed the correct mod UUID?")
         return
     end
 
