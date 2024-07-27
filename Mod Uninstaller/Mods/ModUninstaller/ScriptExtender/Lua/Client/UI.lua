@@ -99,10 +99,38 @@ local function updateProgressLabel(progressLabel, message, color)
     end)
 end
 
+
+---Update the progress label based on the server response
+---@param progressLabel table|nil The progress label to update
+---@param data table The parsed JSON data from the server
+---@param modName string The name of the mod
+local function updateProgressLabelBasedOnResponse(progressLabel, data, modName)
+    if data.error then
+        updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
+    else
+        updateProgressLabel(progressLabel, "Successfully uninstalled mod '" .. modName .. "'!", "#00FF00")
+    end
+end
+
+---Update the modsToUninstallOptions to mark the mod as uninstalled
+---@param modsToUninstallOptions table The list of mods to uninstall
+---@param modName string The name of the mod
+---@param error string|nil The error message if any
+local function updateModsToUninstallOptions(modsToUninstallOptions, modName, error)
+    if not error then
+        for i, option in ipairs(modsToUninstallOptions) do
+            if option:find(modName) then
+                modsToUninstallOptions[i] = "(UNINSTALLED) " .. option
+                break
+            end
+        end
+    end
+end
+
 ---Handle the response from the server after attempting to uninstall a mod
 ---@param progressLabel table|nil The progress label to update
 ---@param payload string The JSON-encoded payload from the server
-local function handleUninstallResponse(progressLabel, payload)
+local function handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
     local data = Ext.Json.Parse(payload)
     local mod = Ext.Mod.GetMod(data.modUUID)
     if not mod then
@@ -110,13 +138,8 @@ local function handleUninstallResponse(progressLabel, payload)
     end
 
     local modName = mod.Info.Name
-
-    -- TODO: allow localization (will need string interpolation for the mod name, etc)
-    if data.error then
-        updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
-    else
-        updateProgressLabel(progressLabel, "Successfully uninstalled mod '" .. modName .. "'!", "#00FF00")
-    end
+    updateProgressLabelBasedOnResponse(progressLabel, data, modName)
+    updateModsToUninstallOptions(modsToUninstallOptions, modName, data.error)
 end
 
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
@@ -188,7 +211,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         end, function(err)
             -- except pass lmao (this is a hack cause IMGUI is dumb, the button actually exists)
         end)
-        handleUninstallResponse(progressLabel, payload)
+        handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
     end)
 
     Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
@@ -198,7 +221,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         if progressLabel then
             progressLabel.SameLine = true
         end
-        handleUninstallResponse(progressLabel, payload)
+        handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
     end)
 
     return button
