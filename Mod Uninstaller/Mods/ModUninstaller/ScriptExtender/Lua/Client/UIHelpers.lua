@@ -47,8 +47,14 @@ function UIHelpers:PopulateModsToUninstallOptions()
 end
 
 -- Extract the modId from the modOption string
+-- This whole deal was implemented before UserData was a thing, but I'm not refactoring it now
 function UIHelpers:GetModToUninstallUUID(modOption)
-    return modOption:match("%(([^)]+)%)")
+    local lastUUID = nil
+    -- regex in Lua sucks
+    for uuid in modOption:gmatch("%(([^)]+)%)") do
+        lastUUID = uuid
+    end
+    return lastUUID
 end
 
 function UIHelpers:Wrap(text, width)
@@ -133,15 +139,15 @@ end
 -- Courtesy of Aahz
 function UIHelpers:GetColorByRarity(rarity)
     local rarity_colors = {
-        ["Divine"]        = {0.92, 0.78, 0.03, 1.0},
-        ["Legendary"]     = {0.82, 0.00, 0.49, 1.0},
-        ["Epic"]          = {0.64, 0.27, 0.91, 1.0},
-        ["Rare"]          = {0.20, 0.80, 1.00, 1.0},
-        ["Uncommon"]      = {0.00, 0.66, 0.00, 1.0},
-        ["Unique"]        = {0.78, 0.65, 0.35, 1.0},
-        ["Common"]        = {0.3, 0.3, 0.3, 1.0}
+        ["Divine"]    = { 0.92, 0.78, 0.03, 1.0 },
+        ["Legendary"] = { 0.82, 0.00, 0.49, 1.0 },
+        ["Epic"]      = { 0.64, 0.27, 0.91, 1.0 },
+        ["Rare"]      = { 0.20, 0.80, 1.00, 1.0 },
+        ["Uncommon"]  = { 0.00, 0.66, 0.00, 1.0 },
+        ["Unique"]    = { 0.78, 0.65, 0.35, 1.0 },
+        ["Common"]    = { 0.3, 0.3, 0.3, 1.0 }
     }
-    return rarity_colors[rarity] or {0.3, 0.3, 0.3, 1.0}
+    return rarity_colors[rarity] or { 0.3, 0.3, 0.3, 1.0 }
 end
 
 -- TODO: deprecate this with a VC function (I don't want to update VC just for this)
