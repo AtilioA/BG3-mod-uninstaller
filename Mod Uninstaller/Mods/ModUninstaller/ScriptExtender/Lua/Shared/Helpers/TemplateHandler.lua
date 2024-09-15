@@ -1,24 +1,25 @@
-local function isVanillaFilename(filename)
-    local vanillaPaths = {
-        "Public/Gustav",
-        "Public/GustavDev",
-        "Public/Shared",
-        "Public/SharedDev",
-        "Mods/Gustav",
-        "Mods/GustavDev",
-        "Mods/Shared",
-        "Mods/SharedDev",
-        "Public/Honour",
-        "Mods/Honour"
-    }
+local function generateVanillaPatterns()
+    local folderNames = { "Public", "Mods", "Shared", "SharedDev" }
+    local modNames = { "Gustav", "GustavDev", "Shared", "SharedDev", "Honour", "MainUI", "ModBrowser" }
+    local vanillaPatterns = {}
 
-    for _, path in pairs(vanillaPaths) do
-        if string.find(filename, path) then
-            return true
+    for _, folder in ipairs(folderNames) do
+        for _, mod in ipairs(modNames) do
+            table.insert(vanillaPatterns, folder .. "/" .. mod)
         end
     end
 
-    MUDebug(3, "Filename does not match any vanilla paths")
+    return vanillaPatterns
+end
+
+local function isVanillaFilename(filename)
+    local vanillaPatterns = generateVanillaPatterns()
+
+    for _, pattern in ipairs(vanillaPatterns) do
+        if string.find(filename, pattern) then
+            return true
+        end
+    end
     return false
 end
 
@@ -65,9 +66,13 @@ local function formatTemplateData(templateData)
 
     local templateStats = Ext.Stats.Get(templateData.Stats)
     local rarity = nil
-    if templateStats and templateStats.Rarity then
-        rarity = templateStats.Rarity
-    end
+    xpcall(function()
+        if templateStats and templateStats.Rarity then
+            rarity = templateStats.Rarity
+        end
+    end, function(err)
+        MUWarn(0, "Error retrieving rarity: " .. tostring(err))
+    end)
 
     return {
         Description = description,
