@@ -1,6 +1,7 @@
 UI = {}
 UI.HasLoadedTemplates = false
 
+local comboBox
 local loadingText
 
 -- Function to create a table with item info
@@ -75,7 +76,7 @@ local function createModsComboBox(tabHeader, modsToUninstallOptions)
     -- Insert placeholder at the beginning of the options
     table.insert(modsToUninstallOptions, 1, Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213"))
 
-    local comboBox = tabHeader:AddCombo("")
+    comboBox = tabHeader:AddCombo("")
     createModsToUninstallDisclaimer(comboBox)
 
     comboBox.IDContext = "ModsToUninstallComboBox"
@@ -113,16 +114,24 @@ local function updateProgressLabelBasedOnResponse(progressLabel, data, modName)
 end
 
 ---Update the modsToUninstallOptions to mark the mod as uninstalled
----@param modsToUninstallOptions table The list of mods to uninstall
----@param modName string The name of the mod
+---@param uninstalledModUUID string The name of the mod that was uninstalled
 ---@param error string|nil The error message if any
-local function updateModsToUninstallOptions(modsToUninstallOptions, modName, error)
-    if not error then
-        for i, option in ipairs(modsToUninstallOptions) do
-            if option:find(modName) then
-                modsToUninstallOptions[i] = "(UNINSTALLED) " .. option
-                break
+local function updateModsToUninstallOptions(uninstalledModUUID, error)
+    if error then
+        return
+    end
+
+    for i, option in ipairs(comboBox.Options) do
+        local optionUUID = UIHelpers:GetModToUninstallUUID(option)
+        if optionUUID and uninstalledModUUID == optionUUID then
+            comboBox.Options[i] = "(UNINSTALLED) " .. option
+
+            if not comboBox.UserData then
+                comboBox.UserData = {}
             end
+            comboBox.UserData["Uninstalled"] = comboBox.UserData["Uninstalled"] or {}
+            comboBox.UserData["Uninstalled"][optionUUID] = true
+            break
         end
     end
 end
@@ -130,7 +139,7 @@ end
 ---Handle the response from the server after attempting to uninstall a mod
 ---@param progressLabel table|nil The progress label to update
 ---@param payload string The JSON-encoded payload from the server
-local function handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
+local function handleUninstallResponse(progressLabel, payload)
     local data = Ext.Json.Parse(payload)
     local mod = Ext.Mod.GetMod(data.modUUID)
     if not mod then
@@ -138,8 +147,9 @@ local function handleUninstallResponse(progressLabel, payload, modsToUninstallOp
     end
 
     local modName = mod.Info.Name
+    local modUUID = mod.Info.ModuleUUID
     updateProgressLabelBasedOnResponse(progressLabel, data, modName)
-    updateModsToUninstallOptions(modsToUninstallOptions, modName, data.error)
+    updateModsToUninstallOptions(modUUID, data.error)
 end
 
 local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComboBox)
@@ -212,7 +222,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         end, function(err)
             -- except pass lmao (this is a hack cause IMGUI is dumb, the button actually exists)
         end)
-        handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
+        handleUninstallResponse(progressLabel, payload, modsComboBox)
     end)
 
     Ext.RegisterNetListener("MU_Uninstall_Mod_Failed", function(channel, payload)
@@ -222,7 +232,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         if progressLabel then
             progressLabel.SameLine = true
         end
-        handleUninstallResponse(progressLabel, payload, modsToUninstallOptions)
+        handleUninstallResponse(progressLabel, payload, modsComboBox)
     end)
 
     return button
@@ -344,6 +354,14 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
         uninstallButton = createUninstallButton(modDataGroup, modsToUninstallOptions, value)
     else
         uninstallButton.Visible = true
+    end
+
+    -- Make uninstallButton not visible if mod is already uninstalled
+    if modsComboBox and modsComboBox.UserData and modsComboBox.UserData["Uninstalled"] and selectedModUUID and modsComboBox.UserData["Uninstalled"][selectedModUUID] then
+        uninstallButton.Visible = false
+        local alreadyUninstalledText = modDataGroup:AddText(Ext.Loca.GetTranslatedString("h2d2b7288bbe147dd891a4af46a99b881aefb"))
+        alreadyUninstalledText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00DD00"))
+        modDataGroup:AddDummy(0, 10)
     end
 
     local resultsSeparator = modDataGroup:AddSeparator()

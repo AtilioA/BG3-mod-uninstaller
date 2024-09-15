@@ -30,4 +30,5 @@
     <content contentuid="h444ecd5201e246eab95edf6541363fd338e5" version="1">Please hang on, analyzing mod data...</content>
     <content contentuid="h3c3d113627584a96af5c0aa84e9b0e2bf357" version="1">Uninstalling mod [1]...</content>
     <content contentuid="hab5faed71cab405ba5b13c94ad0e092ced5c" version="1">This might take a while.</content>
+    <content contentuid="h2d2b7288bbe147dd891a4af46a99b881aefb" version="1">The mod has already been uninstalled and needs to be removed from the load order.</content>
 </contentList>

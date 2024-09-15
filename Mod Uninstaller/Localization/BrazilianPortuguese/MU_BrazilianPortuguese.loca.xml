@@ -30,4 +30,5 @@
     <content contentuid="h444ecd5201e246eab95edf6541363fd338e5" version="1">Por favor, aguarde, analisando dados de mods...</content>
     <content contentuid="h3c3d113627584a96af5c0aa84e9b0e2bf357" version="1">Desinstalando mod [1]...</content>
     <content contentuid="hab5faed71cab405ba5b13c94ad0e092ced5c" version="1">Isso pode demorar um pouco.</content>
+    <content contentuid="h2d2b7288bbe147dd891a4af46a99b881aefb" version="1">Este mod já foi desinstalado e precisa ser removido da load order.</content>
 </contentList>
