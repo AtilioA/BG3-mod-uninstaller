@@ -188,7 +188,8 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         -- It's a bit gross, but Lua is even more
         if ModsStats[selectedModUUID] and not table.isEmpty(ModsStats[selectedModUUID]) then
             updateProgressLabel(progressLabel,
-                "Uninstalling mod " .. selectedMod .. "...\nThis might take a while.", "#FFA500")
+                VCHelpers.Loca:UpdateLocalizedMessage("h3c3d113627584a96af5c0aa84e9b0e2bf357", selectedMod) .. "\n" ..
+                Ext.Loca.GetTranslatedString("hab5faed71cab405ba5b13c94ad0e092ced5c"), "#FFA500")
         else
             updateProgressLabel(progressLabel,
                 "Uninstalling mod " .. selectedMod .. "...", "#FFA500")
