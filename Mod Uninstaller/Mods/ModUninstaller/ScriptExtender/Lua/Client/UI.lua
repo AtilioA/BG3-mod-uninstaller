@@ -464,9 +464,8 @@ Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Features", function(tabHeader
     createLoadTemplatesButton(localTabHeader)
 end)
 
-Ext.RegisterNetListener("MCM_Mod_Tab_Activated", function(channel, payload)
-    local data = Ext.Json.Parse(payload)
-    if data.modGUID == ModuleUUID and not UI.HasLoadedTemplates then
+Ext.ModEvents.BG3MCM["MCM_Mod_Tab_Activated"]:Subscribe(function(eventData)
+    if eventData.modUUID == ModuleUUID and not UI.HasLoadedTemplates then
         loadTemplates(localTabHeader)
     end
 end)
