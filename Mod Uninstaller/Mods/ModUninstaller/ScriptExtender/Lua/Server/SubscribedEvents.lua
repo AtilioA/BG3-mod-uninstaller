@@ -39,6 +39,8 @@ function UninstallMod(modUUID)
         Osi.OpenMessageBox(Osi.GetHostCharacter(), "Mod '" ..
             mod.Info.Name ..
             "' was uninstalled successfully!\nYou may now disable it in your mod manager.")
+
+        VCHelpers.Feedback:PlayEffect("a0157444-7bde-6338-b0ce-7659d7fe6ed0")
         Ext.Net.BroadcastMessage("MU_Uninstalled_Mod", Ext.Json.Stringify({ modUUID = modUUID }))
     else
         Ext.Net.BroadcastMessage("MU_Uninstall_Mod_Failed", Ext.Json.Stringify({ modUUID = modUUID, error = err }))
