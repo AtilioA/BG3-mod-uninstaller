@@ -123,7 +123,8 @@ local function updateModsToUninstallOptions(uninstalledModUUID, error)
 
     for i, option in ipairs(comboBox.Options) do
         local optionUUID = UIHelpers:GetModToUninstallUUID(option)
-        if optionUUID and uninstalledModUUID == optionUUID then
+        -- I just want to release this, ok?
+        if optionUUID and uninstalledModUUID == optionUUID and not option:find("%(UNINSTALLED%)") then
             comboBox.Options[i] = "(UNINSTALLED) " .. option
 
             if not comboBox.UserData then
@@ -198,8 +199,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         -- It's a bit gross, but Lua is even more
         if ModsStats[selectedModUUID] and not table.isEmpty(ModsStats[selectedModUUID]) then
             updateProgressLabel(progressLabel,
-                VCHelpers.Loca:UpdateLocalizedMessage("h3c3d113627584a96af5c0aa84e9b0e2bf357", selectedMod) .. "\n" ..
-                Ext.Loca.GetTranslatedString("hab5faed71cab405ba5b13c94ad0e092ced5c"), "#FFA500")
+                "Uninstalling mod " .. selectedMod .. "...\nThis might take a while.", "#FFA500")
         else
             updateProgressLabel(progressLabel,
                 "Uninstalling mod " .. selectedMod .. "...", "#FFA500")
@@ -359,7 +359,8 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
     -- Make uninstallButton not visible if mod is already uninstalled
     if modsComboBox and modsComboBox.UserData and modsComboBox.UserData["Uninstalled"] and selectedModUUID and modsComboBox.UserData["Uninstalled"][selectedModUUID] then
         uninstallButton.Visible = false
-        local alreadyUninstalledText = modDataGroup:AddText(Ext.Loca.GetTranslatedString("h2d2b7288bbe147dd891a4af46a99b881aefb"))
+        local alreadyUninstalledText = modDataGroup:AddText(Ext.Loca.GetTranslatedString(
+        "h2d2b7288bbe147dd891a4af46a99b881aefb"))
         alreadyUninstalledText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00DD00"))
         modDataGroup:AddDummy(0, 10)
     end
