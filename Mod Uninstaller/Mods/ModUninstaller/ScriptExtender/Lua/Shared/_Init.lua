@@ -23,7 +23,7 @@ local function UpdateLoca()
     end
 end
 
-UpdateLoca()
+-- UpdateLoca()
 
 local deps = {
     VCModuleUUID = "f97b43be-7398-4ea5-8fe2-be7eb3d4b5ca",
