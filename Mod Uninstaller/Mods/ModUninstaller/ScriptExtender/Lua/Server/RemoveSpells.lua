@@ -5,7 +5,7 @@ function RemoveSpellsFromEntities(spells)
     for Guid, entityHandle in pairs(entities) do
         MUWarn(2, "Removing spells from entity " .. Guid)
         for _, spell in ipairs(spells) do
-            MUWarn(3, "Removing spell " .. spell .. " from entity " .. Guid)
+            -- MUWarn(3, "Removing spell " .. spell .. " from entity " .. Guid)
             Osi.RemoveSpell(Guid, spell)
         end
     end

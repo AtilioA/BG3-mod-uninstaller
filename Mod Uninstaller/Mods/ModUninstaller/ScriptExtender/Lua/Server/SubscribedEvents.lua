@@ -20,12 +20,12 @@ function UninstallMod(modUUID)
     end
 
     local success, err = xpcall(function()
-        if MCMGet("delete_items") then
+        if MCM.Get("delete_items") then
             MUWarn(0, "Deleting " .. #ModsTemplates[modUUID] .. " item templates from mod " .. mod.Info.Name)
             DeleteTemplatesForMod(modUUID)
             MUSuccess(0, "Deleted all item templates from mod " .. mod.Info.Name)
         end
-        if MCMGet("remove_stats") then
+        if MCM.Get("remove_stats") then
             MUWarn(0, "Removing statuses from mod " .. mod.Info.Name)
             RemoveStatusesForMod(modUUID)
             MUWarn(0, "Removing spells from mod " .. mod.Info.Name)

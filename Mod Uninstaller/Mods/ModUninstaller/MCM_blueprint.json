@@ -14,10 +14,10 @@
                             "Name": "Debug level",
                             "Type": "slider_int",
                             "Default": 1,
-                            "Description": "0 = no debug, 1 = minimal, 2 = verbose debug logs.\nFor this mod, 1 or 2 is recommended.",
+                            "Description": "0 = no debug, 1 = minimal, 2 = verbose debug logs, 3 = extremely verbose debug logs.\nFor this mod, only 1 or 2 is recommended.",
                             "Options": {
                                 "Min": 0,
-                                "Max": 2
+                                "Max": 3
                             },
                             "Handles": {
                                 "DescriptionHandle": "h41207aa60b2141b0a17e70393fffb4a7d889",

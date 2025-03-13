@@ -3,9 +3,9 @@
 function RemovePassivesFromEntities(passives)
     local entities = Ext.Entity.GetAllEntitiesWithUuid()
     for Guid, entityHandle in pairs(entities) do
-        MUWarn(2, "Removing passives from entity " .. Guid)
+    MUWarn(3, "Removing passives from entity " .. Guid)
         for _, passive in ipairs(passives) do
-            MUWarn(3, "Removing passive " .. passive .. " from entity " .. Guid)
+            -- MUWarn(3, "Removing passive " .. passive .. " from entity " .. Guid)
             Osi.RemovePassive(Guid, passive)
         end
     end

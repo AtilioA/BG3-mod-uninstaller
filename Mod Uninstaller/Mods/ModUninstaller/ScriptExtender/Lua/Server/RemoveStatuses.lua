@@ -2,7 +2,7 @@ function RemoveStatusesFromEntities(statuses)
     local entities = Ext.Entity.GetAllEntitiesWithUuid()
     for Guid, entityHandle in pairs(entities) do
         for _, status in ipairs(statuses) do
-            MUWarn(2, "Removing status " .. status .. " from entity " .. Guid)
+            MUWarn(3, "Removing status " .. status .. " from entity " .. Guid)
             Osi.RemoveStatus(Guid, status)
         end
     end

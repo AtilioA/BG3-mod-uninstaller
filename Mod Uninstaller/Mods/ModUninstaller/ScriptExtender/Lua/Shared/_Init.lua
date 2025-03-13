@@ -1,5 +1,29 @@
 setmetatable(Mods.ModUninstaller, { __index = Mods.VolitionCabinet })
-DevelReady = Ext.Utils:Version() >= 17 or Ext.Debug.IsDeveloperMode()
+
+local function UpdateLoca()
+    for _, file in ipairs({ "MU_English.loca" }) do
+        local fileName = string.format("Localization/English/%s.xml", file)
+        local contents = Ext.IO.LoadFile(fileName, "data")
+
+        if not contents then
+            _P("Failed to load file: " .. fileName)
+            return
+        end
+
+        for line in string.gmatch(contents, "([^\r\n]+)\r*\n") do
+            local handle, value = string.match(line, '<content contentuid="(%w+)".->(.+)</content>')
+            if handle ~= nil and value ~= nil then
+                value = value:gsub("&[lg]t;", {
+                    ['&lt;'] = "<",
+                    ['&gt;'] = ">"
+                })
+                Ext.Loca.UpdateTranslatedString(handle, value)
+            end
+        end
+    end
+end
+
+UpdateLoca()
 
 local deps = {
     VCModuleUUID = "f97b43be-7398-4ea5-8fe2-be7eb3d4b5ca",
@@ -15,9 +39,6 @@ if not Ext.Mod.IsModLoaded(deps.MCMModuleUUID) then
         "BG3 Mod Configuration Menu is missing and is a hard requirement. PLEASE MAKE SURE IT IS ENABLED IN YOUR MOD MANAGER.")
 end
 
-function MCMGet(settingID)
-    return Mods.BG3MCM.MCMAPI:GetSettingValue(settingID, ModuleUUID)
-end
 
 ---Ext.Require files at the path
 ---@param path string

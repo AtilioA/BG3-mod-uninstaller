@@ -1,4 +1,4 @@
-MUPrinter = VolitionCabinetPrinter:New { Prefix = "Mod Uninstaller", ApplyColor = true, DebugLevel = MCMGet("debug_level") }
+MUPrinter = VolitionCabinetPrinter:New { Prefix = "Mod Uninstaller", ApplyColor = true, DebugLevel = MCM.Get("debug_level") }
 
 -- Update the Printer debug level when the setting is changed, since the value is only used during the object's creation
 Ext.ModEvents.BG3MCM['MCM_Setting_Saved']:Subscribe(function(payload)
@@ -12,36 +12,82 @@ Ext.ModEvents.BG3MCM['MCM_Setting_Saved']:Subscribe(function(payload)
     end
 end)
 
+
+-- Helper to combine varargs into a single string.
+local function combineArgs(...)
+    local args = { ... }
+    for i = 1, #args do
+        args[i] = tostring(args[i])
+    end
+    return table.concat(args, " ")
+end
+
 function MUPrint(debugLevel, ...)
     MUPrinter:SetFontColor(0, 255, 255)
     MUPrinter:Print(debugLevel, ...)
 end
 
 function MUTest(debugLevel, ...)
-    MUPrinter:SetFontColor(100, 200, 150)
-    MUPrinter:PrintTest(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:SetFontColor(100, 200, 150)
+        MUPrinter:PrintTest(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("TEST", message)
+    end
 end
 
 function MUSuccess(debugLevel, ...)
-    MUPrinter:SetFontColor(50, 255, 100)
-    MUPrinter:Print(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:SetFontColor(50, 255, 100)
+        MUPrinter:Print(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("SUCCESS", message)
+    end
 end
 
 function MUDebug(debugLevel, ...)
-    MUPrinter:SetFontColor(200, 200, 0)
-    MUPrinter:PrintDebug(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:SetFontColor(200, 200, 0)
+        MUPrinter:PrintDebug(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("DEBUG", message)
+    end
 end
 
 function MUWarn(debugLevel, ...)
-    MUPrinter:SetFontColor(255, 100, 50)
-    MUPrinter:PrintWarning(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:SetFontColor(255, 100, 50)
+        MUPrinter:PrintWarning(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("WARN", message)
+    end
 end
 
 function MUDump(debugLevel, ...)
-    MUPrinter:SetFontColor(190, 150, 225)
-    MUPrinter:Dump(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:SetFontColor(190, 150, 225)
+        MUPrinter:Dump(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("DUMP", message)
+    end
 end
 
 function MUDumpArray(debugLevel, ...)
-    MUPrinter:DumpArray(debugLevel, ...)
+    if debugLevel > 2 then return end
+    if debugLevel == 0 then
+        MUPrinter:DumpArray(debugLevel, ...)
+    else
+        local message = combineArgs(...)
+        LogToFile.log("DUMPARRAY", message)
+    end
 end
