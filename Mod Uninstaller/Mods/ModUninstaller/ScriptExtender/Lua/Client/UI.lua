@@ -360,7 +360,7 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
     if modsComboBox and modsComboBox.UserData and modsComboBox.UserData["Uninstalled"] and selectedModUUID and modsComboBox.UserData["Uninstalled"][selectedModUUID] then
         uninstallButton.Visible = false
         local alreadyUninstalledText = modDataGroup:AddText(Ext.Loca.GetTranslatedString(
-        "h2d2b7288bbe147dd891a4af46a99b881aefb"))
+            "h2d2b7288bbe147dd891a4af46a99b881aefb"))
         alreadyUninstalledText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#00DD00"))
         modDataGroup:AddDummy(0, 10)
     end
@@ -416,7 +416,9 @@ local function loadTemplates(tabHeader)
             xpcall(getTemplatesAndStats, handleException)
 
             UI.HasLoadedTemplates = true
-            loadingText.Visible = false
+            if loadingText then
+                loadingText.Visible = false
+            end
 
             local function populateModsToUninstallOptions()
                 local modsToUninstallOptions = UIHelpers:PopulateModsToUninstallOptions()
@@ -458,6 +460,16 @@ local function loadTemplates(tabHeader)
     end, handleException)
 end
 
+local function loadTemplatesWithMessage(tabHeader)
+    loadingText = parseGroup:AddText(Ext.Loca.GetTranslatedString("h444ecd5201e246eab95edf6541363fd338e5"))
+    loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
+
+    -- Add a small delay so the loading text is displayed before processing starts
+    VCHelpers.Timer:OnTicks(2, function()
+        loadTemplates(tabHeader)
+    end)
+end
+
 local function createLoadTemplatesButton(tabHeader)
     parseGroup = tabHeader:AddGroup(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseGroup.IDContext = "LoadModDataGroup"
@@ -471,11 +483,8 @@ local function createLoadTemplatesButton(tabHeader)
     local parseButton = parseGroup:AddButton(Ext.Loca.GetTranslatedString("h5872505ffa094434bf65b4b17b94e8bcg1d1"))
     parseButton.IDContext = "LoadTemplatesButton"
 
-    loadingText = parseGroup:AddText(Ext.Loca.GetTranslatedString("h444ecd5201e246eab95edf6541363fd338e5"))
-    loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
-
     parseButton.OnClick = function()
-        loadTemplates(tabHeader)
+        loadTemplatesWithMessage(tabHeader)
     end
 end
 
@@ -486,7 +495,7 @@ end)
 
 Ext.ModEvents.BG3MCM["MCM_Mod_Tab_Activated"]:Subscribe(function(eventData)
     if eventData.modUUID == ModuleUUID and not UI.HasLoadedTemplates then
-        loadTemplates(localTabHeader)
+        loadTemplatesWithMessage(localTabHeader)
     end
 end)
 
