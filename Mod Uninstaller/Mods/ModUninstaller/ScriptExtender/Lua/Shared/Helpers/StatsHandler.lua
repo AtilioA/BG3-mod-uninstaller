@@ -4,7 +4,8 @@ local vanillaPaks = {
     ["GustavDev"] = true,
     ["Shared"] = true,
     ["SharedDev"] = true,
-    ["Honour"] = true
+    ["Honour"] = true,
+    ["HonourX"] = true,
 }
 
 local function isVanillaPak(pakName)
