@@ -1,6 +1,6 @@
 local function generateVanillaPatterns()
     local folderNames = { "Public", "Mods", "Shared", "SharedDev" }
-    local modNames = { "Gustav", "GustavDev", "Shared", "SharedDev", "Honour", "MainUI", "ModBrowser" }
+    local modNames = { "GustavX", "Gustav", "GustavDev", "Shared", "SharedDev", "Honour", "MainUI", "ModBrowser" }
     local vanillaPatterns = {}
 
     for _, folder in ipairs(folderNames) do
@@ -182,7 +182,17 @@ local function dumpAllVanillaTemplates()
     Ext.IO.SaveFile("VanillaTemplates.json", Ext.DumpExport(vanillaTemplateTable))
 end
 
+local function dumpAllVanillaStatuses()
+    local statuses = Ext.Stats.GetStatsManager()
+    local statusTable = {}
+    for _, statusData in pairs(statuses) do
+        table.insert(statusTable, statusData.Id)
+    end
+    Ext.IO.SaveFile("VanillaStatuses.json", Ext.DumpExport(statusTable))
+end
+
 Ext.RegisterConsoleCommand("MU_DVT", function(cmd) dumpAllVanillaTemplates() end)
+-- Ext.RegisterConsoleCommand("MU_DVS", function(cmd) dumpAllVanillaStatuses() end)
 
 -- function GetTemplatesByStats(modData)
 --     local templates = Ext.Template.GetAllRootTemplates()

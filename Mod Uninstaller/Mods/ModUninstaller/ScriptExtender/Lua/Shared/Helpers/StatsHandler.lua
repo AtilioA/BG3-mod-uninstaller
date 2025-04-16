@@ -1,4 +1,5 @@
 local vanillaPaks = {
+    ["GustavX"] = true,
     ["Gustav"] = true,
     ["GustavDev"] = true,
     ["Shared"] = true,
