@@ -183,16 +183,12 @@ local function dumpAllVanillaTemplates()
 end
 
 local function dumpAllVanillaStatuses()
-    local statuses = Ext.Stats.GetStatsManager()
-    local statusTable = {}
-    for _, statusData in pairs(statuses) do
-        table.insert(statusTable, statusData.Id)
-    end
-    Ext.IO.SaveFile("VanillaStatuses.json", Ext.DumpExport(statusTable))
+    local statuses = Ext.Stats.GetStats()
+    Ext.IO.SaveFile("VanillaStatuses.json", Ext.DumpExport(statuses))
 end
 
 Ext.RegisterConsoleCommand("MU_DVT", function(cmd) dumpAllVanillaTemplates() end)
--- Ext.RegisterConsoleCommand("MU_DVS", function(cmd) dumpAllVanillaStatuses() end)
+Ext.RegisterConsoleCommand("MU_DVS", function(cmd) dumpAllVanillaStatuses() end)
 
 -- function GetTemplatesByStats(modData)
 --     local templates = Ext.Template.GetAllRootTemplates()
