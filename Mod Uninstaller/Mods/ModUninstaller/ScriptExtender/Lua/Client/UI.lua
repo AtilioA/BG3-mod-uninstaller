@@ -407,6 +407,8 @@ local function loadTemplates(tabHeader)
     xpcall(function()
         if not UI.HasLoadedTemplates then
             local function getTemplatesAndStats()
+                -- Initialize vanilla tables at runtime
+                InitializeVanillaTables()
                 VanillaTemplates, ModsTemplates = GetVanillaAndModsTemplates()
                 ModsStats = GetStatsEntriesByMod({ "StatusData", "SpellData", "PassiveData" })
                 -- Needed cause some load orders might be too big to send via net messages

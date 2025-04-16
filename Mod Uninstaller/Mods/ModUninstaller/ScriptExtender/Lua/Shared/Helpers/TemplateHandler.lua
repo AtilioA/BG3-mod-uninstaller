@@ -23,6 +23,49 @@ local function isVanillaFilename(filename)
     return false
 end
 
+-- Generate VanillaTemplatesIDs table at runtime
+function GenerateVanillaTemplatesIDs()
+    MUPrint(1, "Generating VanillaTemplatesIDs at runtime...")
+    local templates = Ext.Template.GetAllRootTemplates()
+    local count = 0
+
+    -- Reset global table
+    VanillaTemplatesIDs = {}
+
+    for _templateId, templateData in pairs(templates) do
+        if templateData.TemplateType == 'item' and isVanillaFilename(templateData.FileName) then
+            VanillaTemplatesIDs[templateData.Id] = true
+            count = count + 1
+        end
+    end
+
+    MUSuccess(1, "Generated VanillaTemplatesIDs with " .. count .. " entries")
+end
+
+-- Generate VanillaStatuses table at runtime
+function GenerateVanillaStatuses()
+    MUPrint(1, "Generating VanillaStatuses at runtime...")
+    local statuses = Ext.Stats.GetStats("StatusData")
+    local count = 0
+
+    -- Reset global table
+    VanillaStatuses = {}
+
+    -- Mark vanilla status entries
+    for _, status in pairs(statuses) do
+        local statusId = status
+        if type(status) == "table" and status.Name then
+            statusId = status.Name
+        end
+
+        -- Assume all statuses from Stats.txt are vanilla
+        VanillaStatuses[statusId] = true
+        count = count + 1
+    end
+
+    MUSuccess(1, "Generated VanillaStatuses with " .. count .. " entries")
+end
+
 local function isVanillaID(id)
     return VanillaTemplatesIDs[id] == true
 end
@@ -113,7 +156,20 @@ local function checkDirectoryInPath(filePath, directory)
     return firstDirectory == normalizedDirectory
 end
 
+-- Initialize vanilla template and status tables if they haven't been initialized
+function InitializeVanillaTables()
+    MUPrint(1, "Initializing vanilla tables...")
+    GenerateVanillaTemplatesIDs()
+    GenerateVanillaStatuses()
+    MUSuccess(1, "Vanilla tables initialized successfully")
+end
+
 function GetVanillaAndModsTemplates()
+    -- Ensure vanilla tables are initialized before using them
+    if table.isEmpty(VanillaTemplatesIDs) then
+        InitializeVanillaTables()
+    end
+
     local function getModIdsTable()
         MUPrint(1, "Fetching mod load order")
         local loadOrder = Ext.Mod.GetLoadOrder()
