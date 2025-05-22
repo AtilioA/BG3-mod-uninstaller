@@ -1,7 +1,7 @@
 local function generateVanillaPatterns()
     local folderNames = { "Public", "Mods", "Shared", "SharedDev" }
     local modNames = { "GustavX", "Gustav", "GustavDev", "Shared", "SharedDev", "Honour", "HonourX", "MainUI",
-    "ModBrowser" }
+        "ModBrowser" }
     local vanillaPatterns = {}
 
     for _, folder in ipairs(folderNames) do
@@ -29,9 +29,6 @@ function GenerateVanillaTemplatesIDs()
     MUPrint(1, "Generating VanillaTemplatesIDs at runtime...")
     local templates = Ext.Template.GetAllRootTemplates()
     local count = 0
-
-    -- Reset global table
-    VanillaTemplatesIDs = {}
 
     for _templateId, templateData in pairs(templates) do
         if templateData.TemplateType == 'item' and isVanillaFilename(templateData.FileName) then

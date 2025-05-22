@@ -1,6 +1,4 @@
 RequireFiles("Shared/Data/", {
+  "VanillaTemplatesIDs",
+  "VanillaStatuses",
 })
-
--- Initialize global tables that will be populated at runtime
-VanillaStatuses = {}
-VanillaTemplatesIDs = {}
