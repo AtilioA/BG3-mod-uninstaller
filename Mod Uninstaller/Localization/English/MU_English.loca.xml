@@ -31,4 +31,6 @@
     <content contentuid="h3c3d113627584a96af5c0aa84e9b0e2bf357" version="1">Uninstalling mod [1]...</content>
     <content contentuid="hab5faed71cab405ba5b13c94ad0e092ced5c" version="1">This might take a while.</content>
     <content contentuid="h2d2b7288bbe147dd891a4af46a99b881aefb" version="1">The mod has already been uninstalled and needs to be removed from the load order.</content>
+    <content contentuid="h39a2b05c06c64cf99a65c287804520a7d3ca" version="1">(Optional) Filter mods to uninstall</content>
+    <content contentuid="h425c81c2ddb6461da4431033fa480aba7cc7" version="1">No matching mods found</content>
 </contentList>

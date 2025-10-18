@@ -48,8 +48,13 @@ end
 
 -- Extract the modId from the modOption string
 -- This whole deal was implemented before UserData was a thing, but I'm not refactoring it now
+---@param modOption string|nil The mod option string to extract the modId from
+---@return string|nil - The modId
 function UIHelpers:GetModToUninstallUUID(modOption)
     local lastUUID = nil
+    if not modOption then
+        return lastUUID
+    end
     -- regex in Lua sucks
     for uuid in modOption:gmatch("%(([^)]+)%)") do
         lastUUID = uuid
@@ -153,6 +158,28 @@ end
 -- TODO: deprecate this with a VC function (I don't want to update VC just for this)
 function UIHelpers:ReplaceBrWithNewlines(str)
     return string.gsub(str, "<br>", "\n")
+end
+
+--- Filter mod options based on search query (case-insensitive substring match)
+---@param modsToUninstallOptions table The list of mod options to filter
+---@param searchQuery string The search query to filter by
+---@return table filteredOptions The filtered list of mod options
+function UIHelpers:FilterModOptions(modsToUninstallOptions, searchQuery)
+    if not searchQuery or searchQuery == "" then
+        return modsToUninstallOptions
+    end
+
+    local filteredOptions = {}
+    local lowerQuery = string.lower(searchQuery)
+
+    for _, modOption in ipairs(modsToUninstallOptions) do
+        local lowerModOption = string.lower(modOption)
+        if string.find(lowerModOption, lowerQuery, 1, true) then
+            table.insert(filteredOptions, modOption)
+        end
+    end
+
+    return filteredOptions
 end
 
 return UIHelpers

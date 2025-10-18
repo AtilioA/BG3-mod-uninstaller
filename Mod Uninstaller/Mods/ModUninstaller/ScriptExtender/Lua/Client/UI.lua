@@ -3,6 +3,8 @@ UI.HasLoadedTemplates = false
 
 local comboBox
 local loadingText
+local searchBar
+local allModsToUninstallOptions = {}
 
 -- Function to create a table with item info
 -- Courtesy of Aahz
@@ -70,6 +72,29 @@ local function createModsToUninstallDisclaimer(IMGUIElement)
         "hb94283896cc041b1a1cdaa0dba833fd5a026")))
     modListDisclaimer.IDContext = "ModsToUninstallDisclaimer"
     modListDisclaimer.SameLine = false
+end
+
+local function createSearchBar(tabHeader, modsToUninstallOptions)
+    local showSearchBarSetting = MCM.Get("show_search_bar")
+    local shouldShowSearchBar = showSearchBarSetting and #modsToUninstallOptions > 1
+
+    if not shouldShowSearchBar then
+        return nil
+    end
+
+    local searchBarTitle = tabHeader:AddText(Ext.Loca.GetTranslatedString("h39a2b05c06c64cf99a65c287804520a7d3ca"))
+    searchBarTitle.IDContext = "SearchBarTitle"
+    searchBarTitle.SameLine = false
+
+    searchBar = tabHeader:AddInputText("")
+    searchBar.IDContext = "ModSearchBar"
+    searchBar.SameLine = false
+    searchBar.Text = ""
+
+    local _searchBarSeparator = tabHeader:AddSeparator()
+    _searchBarSeparator.IDContext = "SearchBarSeparator"
+
+    return searchBar
 end
 
 local function createModsComboBox(tabHeader, modsToUninstallOptions)
@@ -372,10 +397,25 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
     local renderedStats = renderStatEntries(modDataGroup, selectedModUUID)
 
     if not renderedTemplates and not renderedStats then
-        local noEntriesText = modDataGroup:AddText(
+        local _noEntriesText = modDataGroup:AddText(
             UIHelpers:ReplaceBrWithNewlines(Ext.Loca.GetTranslatedString("h657bb402f5f1479abcac2c774eba5bf15633")))
         uninstallButton.Visible = false
     end
+end
+
+local function updateComboBoxWithFilteredOptions(modsComboBox, filteredOptions)
+    local placeholder = Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213")
+
+    -- Create a copy of filtered options and add placeholder
+    local optionsWithPlaceholder = {}
+    for _, option in ipairs(filteredOptions) do
+        table.insert(optionsWithPlaceholder, option)
+    end
+    table.insert(optionsWithPlaceholder, 1, placeholder)
+
+    -- Update combobox options
+    comboBox.Options = optionsWithPlaceholder
+    comboBox.SelectedIndex = 0
 end
 
 local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
@@ -440,11 +480,56 @@ local function loadTemplates(tabHeader)
                     MUDebug(1, modsToUninstallOptionsDump)
                     UIHelpers:SortModUUIDTableByModName(modsToUninstallOptions)
 
-                    local uninstallSeparator = createModsToUninstallSeparator(tabHeader)
-                    local modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
+                    -- Store the full list of mods for filtering
+                    allModsToUninstallOptions = {}
+                    for _, option in ipairs(modsToUninstallOptions) do
+                        table.insert(allModsToUninstallOptions, option)
+                    end
+
+                    local _uninstallSeparator = createModsToUninstallSeparator(tabHeader)
+                    local _modsToUninstallLabel = createModsToUninstallLabel(tabHeader)
+
+                    -- Create search bar if applicable
+                    local searchBarElement = createSearchBar(tabHeader, modsToUninstallOptions)
 
                     local modsComboBox = createModsComboBox(tabHeader, modsToUninstallOptions)
                     local modDataGroup = createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
+
+                    -- Set up search bar filtering if it was created
+                    if searchBarElement then
+                        local function handleSearchInput(query)
+                            local filteredOptions
+
+                            if query == "" then
+                                -- If search is empty, show all mods
+                                filteredOptions = allModsToUninstallOptions
+                            else
+                                -- Filter the mod options based on search query
+                                filteredOptions = UIHelpers:FilterModOptions(allModsToUninstallOptions, query)
+                            end
+
+                            -- Update the combobox with filtered options
+                            updateComboBoxWithFilteredOptions(modsComboBox, filteredOptions)
+
+                            -- Clear the mod data group when search changes
+                            clearModDataGroup(modDataGroup)
+
+                            -- Select the first option in the filtered list if there are results
+                            if #filteredOptions > 0 then
+                                modsComboBox.SelectedIndex = 1
+                            else
+                                -- Show a "No results found" message
+                                modsComboBox.Options = { Ext.Loca.GetTranslatedString(
+                                    "h425c81c2ddb6461da4431033fa480aba7cc7") }
+                                modsComboBox.SelectedIndex = 0
+                            end
+                        end
+
+                        searchBarElement.OnChange = function(input)
+                            handleSearchInput(input.Text or "")
+                        end
+                    end
+
                     if parseGroup then
                         parseGroup:Destroy()
                     end

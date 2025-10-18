@@ -45,6 +45,17 @@
                                 "DescriptionHandle": "h0700eec13ba440c3b8f35b3739fca0b08253",
                                 "NameHandle": "h25aff7b603e348ba8c9fdb967f1aa8f4gg25"
                             }
+                        },
+                        {
+                            "Id": "show_search_bar",
+                            "Name": "Show search bar",
+                            "Type": "checkbox",
+                            "Default": true,
+                            "Description": "Display a search bar above the mod list when you have more than 50 mods installed.\nThis helps you quickly find specific mods.",
+                            "Handles": {
+                                "DescriptionHandle": "Display a search bar above the mod list when you have more than 50 mods installed.\nThis helps you quickly find specific mods.",
+                                "NameHandle": "Show search bar"
+                            }
                         }
                     ],
                     "Handles": {

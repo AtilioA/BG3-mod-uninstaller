@@ -1,6 +1,6 @@
 setmetatable(Mods.ModUninstaller, { __index = Mods.VolitionCabinet })
 
-local function UpdateLoca()
+local function updateLoca()
     for _, file in ipairs({ "MU_English.loca" }) do
         local fileName = string.format("Localization/English/%s.xml", file)
         local contents = Ext.IO.LoadFile(fileName, "data")
@@ -23,7 +23,9 @@ local function UpdateLoca()
     end
 end
 
--- UpdateLoca()
+if Ext.Debug.IsDeveloperMode() then
+    updateLoca()
+end
 
 local deps = {
     VCModuleUUID = "f97b43be-7398-4ea5-8fe2-be7eb3d4b5ca",
