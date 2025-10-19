@@ -132,9 +132,12 @@ end
 ---@param modName string The name of the mod
 local function updateProgressLabelBasedOnResponse(progressLabel, data, modName)
     if data.error then
-        updateProgressLabel(progressLabel, "Failed to uninstall mod '" .. modName .. "': " .. data.error, "#FF0000")
+        updateProgressLabel(progressLabel,
+            VCHelpers.Loca:InterpolateLocalizedMessage("h68949eaf89f44339a89600a38bde25b2c12g", modName, data.error),
+            "#FF0000")
     else
-        updateProgressLabel(progressLabel, "Successfully uninstalled mod '" .. modName .. "'!", "#00FF00")
+        updateProgressLabel(progressLabel,
+            VCHelpers.Loca:InterpolateLocalizedMessage("h58a9425318654c08953bb78cbe8ef6c1egee", modName), "#00FF00")
     end
 end
 
@@ -226,10 +229,10 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
         local modName = Ext.Mod.GetMod(selectedModUUID).Info.Name
         if ModsStats[selectedModUUID] and not table.isEmpty(ModsStats[selectedModUUID]) then
             updateProgressLabel(progressLabel,
-                "Uninstalling mod '" .. modName .. "'...\nThis might take a while.", "#FFA500")
+                VCHelpers.Loca:InterpolateLocalizedMessage("hcf9dfc16974d47588d47d561d3bfef79d35a", modName), "#FFA500")
         else
             updateProgressLabel(progressLabel,
-                "Uninstalling mod '" .. modName .. "'...", "#FFA500")
+                VCHelpers.Loca:InterpolateLocalizedMessage("h734ab10ba7df492aa740bf47051db188a79c", modName), "#FFA500")
         end
 
         -- Request the server to take actions to help uninstalling the mod
