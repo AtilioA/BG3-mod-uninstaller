@@ -515,13 +515,11 @@ local function loadTemplates(tabHeader)
                             clearModDataGroup(modDataGroup)
 
                             -- Select the first option in the filtered list if there are results
-                            if #filteredOptions > 0 then
-                                modsComboBox.SelectedIndex = 1
-                            else
+                            modsComboBox.SelectedIndex = 0
+                            if #filteredOptions == 0 then
                                 -- Show a "No results found" message
                                 modsComboBox.Options = { Ext.Loca.GetTranslatedString(
                                     "h425c81c2ddb6461da4431033fa480aba7cc7") }
-                                modsComboBox.SelectedIndex = 0
                             end
                         end
 
