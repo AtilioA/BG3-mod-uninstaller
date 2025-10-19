@@ -151,6 +151,7 @@ local function updateModsToUninstallOptions(uninstalledModUUID, error)
         -- I just want to release this, ok?
         if optionUUID and uninstalledModUUID == optionUUID and not option:find("%(UNINSTALLED%)") then
             comboBox.Options[i] = "(UNINSTALLED) " .. option
+            table.remove(allModsToUninstallOptions, i)
 
             if not comboBox.UserData then
                 comboBox.UserData = {}
@@ -434,6 +435,10 @@ local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOption
     return modDataGroup
 end
 
+local function getModsToUninstallObject()
+    return allModsToUninstallOptions
+end
+
 local function loadTemplates(tabHeader)
     local function handleException(err)
         if tabHeader then
@@ -502,10 +507,10 @@ local function loadTemplates(tabHeader)
 
                             if query == "" then
                                 -- If search is empty, show all mods
-                                filteredOptions = allModsToUninstallOptions
+                                filteredOptions = getModsToUninstallObject()
                             else
                                 -- Filter the mod options based on search query
-                                filteredOptions = UIHelpers:FilterModOptions(allModsToUninstallOptions, query)
+                                filteredOptions = UIHelpers:FilterModOptions(getModsToUninstallObject(), query)
                             end
 
                             -- Update the combobox with filtered options
