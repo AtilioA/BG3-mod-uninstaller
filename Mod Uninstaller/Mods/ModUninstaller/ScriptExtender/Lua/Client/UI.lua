@@ -5,6 +5,7 @@ local comboBox
 local loadingText
 local searchBar
 local allModsToUninstallOptions = {}
+local MOD_SEARCH_BAR_THRESHOLD = 50
 
 -- Function to create a table with item info
 -- Courtesy of Aahz
@@ -76,7 +77,7 @@ end
 
 local function createSearchBar(tabHeader, modsToUninstallOptions)
     local showSearchBarSetting = MCM.Get("show_search_bar")
-    local shouldShowSearchBar = showSearchBarSetting and #modsToUninstallOptions > 1
+    local shouldShowSearchBar = showSearchBarSetting and #modsToUninstallOptions > MOD_SEARCH_BAR_THRESHOLD
 
     if not shouldShowSearchBar then
         return nil
