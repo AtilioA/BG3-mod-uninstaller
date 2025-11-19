@@ -366,7 +366,7 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
     end
 
     -- Check if the selected option is the placeholder and do nothing if it is
-    if value.SelectedIndex == 0 and modsToUninstallOptions[1] == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
+    if value.SelectedIndex == 0 and value.Options[1] == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
         if uninstallButton then
             uninstallButton.Visible = false
         end
@@ -377,7 +377,7 @@ local function handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUni
         end
     end
 
-    local selectedMod = modsToUninstallOptions[value.SelectedIndex + 1]
+    local selectedMod = value.Options[value.SelectedIndex + 1]
     local selectedModUUID = UIHelpers:GetModToUninstallUUID(selectedMod)
 
     -- Create the uninstall button if it doesn't exist
@@ -421,7 +421,7 @@ local function updateComboBoxWithFilteredOptions(modsComboBox, filteredOptions)
 
     -- Update combobox options
     comboBox.Options = optionsWithPlaceholder
-    comboBox.SelectedIndex = 0
+    comboBox.SelectedIndex = 1
 end
 
 local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
@@ -525,7 +525,7 @@ local function loadTemplates(tabHeader)
                             clearModDataGroup(modDataGroup)
 
                             -- Select the first option in the filtered list if there are results
-                            modsComboBox.SelectedIndex = 0
+                            modsComboBox.SelectedIndex = 1
                             if #filteredOptions == 0 then
                                 -- Show a "No results found" message
                                 modsComboBox.Options = { Ext.Loca.GetTranslatedString(
@@ -556,6 +556,11 @@ local function loadTemplates(tabHeader)
 end
 
 local function loadTemplatesWithMessage(tabHeader)
+    if not parseGroup then
+        MUWarn(1, "parseGroup not found")
+        return
+    end
+
     loadingText = parseGroup:AddText(Ext.Loca.GetTranslatedString("h444ecd5201e246eab95edf6541363fd338e5"))
     loadingText:SetColor("Text", VCHelpers.Color:hex_to_rgba("#ADD8E6"))
 
