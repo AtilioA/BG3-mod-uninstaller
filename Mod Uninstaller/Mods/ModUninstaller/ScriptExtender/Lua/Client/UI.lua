@@ -194,7 +194,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     progressLabel.SameLine = false
 
     local function updateButtonLabel()
-        local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
+        local selectedMod = modsComboBox.Options[modsComboBox.SelectedIndex + 1]
         local uninstallText = Ext.Loca.GetTranslatedString("ha2482b4c47ce4044bf3acd25a08a1401fbd6")
         if selectedMod == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
             button.Label = uninstallText
@@ -217,7 +217,7 @@ local function createUninstallButton(tabHeader, modsToUninstallOptions, modsComb
     updateButtonLabel()
 
     button.OnClick = function()
-        local selectedMod = modsToUninstallOptions[modsComboBox.SelectedIndex + 1]
+        local selectedMod = modsComboBox.Options[modsComboBox.SelectedIndex + 1]
         if selectedMod == Ext.Loca.GetTranslatedString("hd1c4fca19088449c9f3b63396070802e7213") then
             return
         end
@@ -320,8 +320,8 @@ end
 
 local function renderStatEntries(modDataGroup, selectedModUUID)
     local stats = ModsStats[selectedModUUID]
-    MUDebug(1, "Stats for mod " .. selectedModUUID .. ":")
-    MUDebug(1, stats)
+    -- MUDebug(1, "Stats for mod " .. selectedModUUID .. ":")
+    -- MUDebug(1, stats)
     modDataGroup:AddDummy(0, 5)
     if not stats or table.isEmpty(stats) then
         local statText = modDataGroup:AddText(
@@ -424,6 +424,11 @@ local function updateComboBoxWithFilteredOptions(modsComboBox, filteredOptions)
     comboBox.SelectedIndex = 1
 end
 
+local function updateSelectedMod(modsComboBox, modDataGroup, modsToUninstallOptions)
+    clearModDataGroup(modDataGroup)
+    handleComboBoxChange(modsComboBox, modsComboBox, modDataGroup, modsToUninstallOptions, nil)
+end
+
 local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOptions)
     -- Group that will contain the templates elements for the selected mod; useful for destroying the elements when changing the selected mod
     local modDataGroup = tabHeader:AddGroup("Templates")
@@ -432,9 +437,7 @@ local function createModDataGroup(tabHeader, modsComboBox, modsToUninstallOption
     -- Handle the change event for the combo box, which will display the templates for the selected mod
     local uninstallButton = nil
     modsComboBox.OnChange = function(value)
-        -- First, destroy all the children of the modDataGroup before rendering new ones
-        clearModDataGroup(modDataGroup)
-        handleComboBoxChange(modsComboBox, value, modDataGroup, modsToUninstallOptions, uninstallButton)
+        updateSelectedMod(modsComboBox, modDataGroup, modsToUninstallOptions)
     end
 
     return modDataGroup
@@ -521,11 +524,9 @@ local function loadTemplates(tabHeader)
                             -- Update the combobox with filtered options
                             updateComboBoxWithFilteredOptions(modsComboBox, filteredOptions)
 
-                            -- Clear the mod data group when search changes
-                            clearModDataGroup(modDataGroup)
-
                             -- Select the first option in the filtered list if there are results
                             modsComboBox.SelectedIndex = 1
+                            updateSelectedMod(modsComboBox, modDataGroup, modsToUninstallOptions)
                             if #filteredOptions == 0 then
                                 -- Show a "No results found" message
                                 modsComboBox.Options = { Ext.Loca.GetTranslatedString(
