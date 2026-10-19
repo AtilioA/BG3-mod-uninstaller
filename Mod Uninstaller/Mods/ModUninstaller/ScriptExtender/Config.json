@@ -1,5 +1,5 @@
 {
-    "RequiredVersion": 28,
+    "RequiredVersion": 32,
     "ModTable": "ModUninstaller",
     "FeatureFlags": [
         "Lua"
